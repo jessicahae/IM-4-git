@@ -1,5 +1,1 @@
-.DS_Store
-config.php
-.vscode
-.env
-node_modules
+
