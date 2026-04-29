@@ -16,7 +16,7 @@ document.getElementById("registerForm")
         console.log(email + " " + password);
 
         try {
-            const response = await fetch("/api/register.php", {
+            const response = await fetch("api/register.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password }),
@@ -24,6 +24,8 @@ document.getElementById("registerForm")
 
             const result = await response.json();
             console.log("result", result);
-        } catch (error) {}
+        } catch (error) {
+            console.error("Fehler beim Abruf:", error);
+        }
     });
     

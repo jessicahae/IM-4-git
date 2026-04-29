@@ -14,10 +14,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $data['email'] ?? '';
     $password = $data['password'] ?? '';
 
+    $insert = $pdo->prepare("INSERT INTO users (email, password) VALUES (:email, :pass)");
+    $insert->execute([
+        ":email" => $email,
+        ":pass" => $password
+    ]);
+
     echo json_encode([
         "status" => "success",
-        "email" => $email,
-
+        "email" => $email
     ]);
 }
 ?>
