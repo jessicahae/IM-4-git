@@ -23,5 +23,7 @@ document.getElementById("registerForm")
             });
 
             const result = await response.json();
-        } catch (error) { }
+            console.log("result", result);
+        } catch (error) {}
     });
+    
