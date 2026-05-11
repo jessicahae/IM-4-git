@@ -1,16 +1,45 @@
 /* style.css */
 body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-  max-width: 600px;
-  line-height: 1.5;
+  font-family: 'comic sans ms', cursive, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+
+  background-color: #fffdf7;
+
+  background-image:
+    /* horizontale Linien */
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 31px,
+      rgba(120, 160, 220, 0.35) 32px
+    ),
+
+    /* eine einzige rote Linie links */
+    linear-gradient(
+      to right,
+      rgba(220, 80, 80, 0.5) 2px,
+      transparent 2px
+    );
+
+  background-size:
+    100% 32px,
+    100% 100%;
+
+  background-position:
+    0 0,
+    120px 0;
+
+  background-repeat:
+    repeat,
+    no-repeat;
 }
 
 h1 {
   margin-bottom: 1em;
 }
 
-form > div {
+form>div {
   margin-bottom: 1em;
 }
 
