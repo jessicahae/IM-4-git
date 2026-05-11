@@ -15,7 +15,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     const result = await response.json();
 
     if (result.status === "success") {
-      window.location.href = "protected.html";
+      window.location.href = "index.html";
     } else {
       alert(result.message || "Login failed.");
     }
