@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $data['password'] ?? '';
 
     // checken, ob user schon registriert ist
-    $stmt = $pdo->prepare("SELECT email FROM user WHERE email = :email");
+    $stmt = $pdo->prepare("SELECT email FROM users WHERE email = :email");
     $stmt->execute([":email" => $email]);
     if ($stmt->fetch()) {
         echo json_encode([
@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
 // neuen user in die DB einfügen
-    $insert = $pdo->prepare("INSERT INTO user (email, password) VALUES (:email, :pass)");
+    $insert = $pdo->prepare("INSERT INTO users (email, password) VALUES (:email, :pass)");
     $insert->execute([
         ":email" => $email,
         ":pass" => $hashedPassword
