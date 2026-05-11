@@ -1,8 +1,12 @@
 /* style.css */
 body {
-  font-family: 'comic sans ms', cursive, sans-serif;
+
   margin: 0;
   min-height: 100vh;
+
+  font-family: "Patrick Hand", "comic sans ms", cursive;
+  font-weight: 400;
+  font-style: normal;
 
   background-color: #fffdf7;
 
@@ -35,8 +39,21 @@ body {
     no-repeat;
 }
 
+.image_diaperkid{
+  display:block;
+  margin: 0 auto;
+  margin-top: 40px;
+  max-width: 100%;
+  height:auto;
+  width: 100px;
+}
+
 h1 {
   margin-bottom: 1em;
+}
+
+h2 {
+  font-size: 1.2em;
 }
 
 form>div {
@@ -44,8 +61,7 @@ form>div {
 }
 
 label {
-  display: inline-block;
-  width: 80px;
+  display: none;
 }
 
 input[type="email"],
@@ -62,3 +78,61 @@ button {
 p {
   margin-top: 1em;
 }
+
+.section_register, .section_login {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Zentriert alles */
+}
+
+form {
+  width: 70%;
+  /* max-width: 320px; */
+  flex-direction: column;
+}
+
+/* Der dicke, eckige Rahmen für die Eingabefelder */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  box-sizing: border-box; /* Verhindert, dass Padding das Feld breiter macht */
+  padding: 7px 8px;
+  font-family: inherit;
+  font-size: 0.9 rem;
+  background-color: #ffffff;
+  border: 2px solid #000000; /* Dicke schwarze Linie */
+}
+
+input::placeholder {
+  color: #666; /* Etwas grauer für den Platzhalter-Text */
+}
+
+button {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 7px 8px;
+  margin-top: 5px;
+  border: 2px solid #000000; /* Dicke schwarze Linie */
+  cursor: pointer;
+  text-transform: uppercase; /* Text in Großbuchstaben */
+  transition: transform 0.5s ease;
+}
+
+button:hover {
+  transform: scale(1.05); /* Vergrößert den Button leicht beim Hover */
+}
+
+/* Primärer Button (Rosa, wie im Entwurf) */
+button[type="submit"] {
+  background-color: #ffb8d1; /* Das Rosa aus dem Bild */
+  color: #000000;
+}
+
+/* Sekundärer Button (Weiß, "Zurück zum Login" / "Registrieren") */
+button[type="button"] {
+  background-color: #ffffff;
+  color: #000000;
+}
+
