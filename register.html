@@ -6,9 +6,15 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <h1>Register</h1>
+    <img src="img/kind mit windel.png" alt="Kind mit Windel" />
+    <h1>Folle Vindl</h1>
+    <h2>Erstelle deinen Account</h2>
 
     <form id="registerForm">
+      <div>
+        <label>Name</label>
+        <input type="text" id="name" required />
+      </div>
       <div>
         <label>Email</label>
         <input type="email" id="email" required />
@@ -17,10 +23,9 @@
         <label>Password</label>
         <input type="password" id="password" required />
       </div>
-      <button type="submit">Register</button>
+      <button type="submit">Registrieren</button>
+      <button type="button" id="login">Ich habe bereits einen Account</button>
     </form>
-
-    <p>Already have an account? <a href="login.html">Login here</a>.</p>
 
     <script src="js/register.js"></script>
   </body>

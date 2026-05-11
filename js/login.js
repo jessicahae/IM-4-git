@@ -24,3 +24,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     alert("Something went wrong!");
   }
 });
+
+document.getElementById("register").addEventListener("click", () => {
+  window.location.href = "register.html";
+});
