@@ -5,28 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
   </head>
   <body>
-    <img src="img/kind mit windel.png" alt="Kind mit Windel" />
-    <h1>Folle Vindl</h1>
+    <img src="img/kind mit windel.png" alt="Kind mit Windel" class="image_diaperkid"/>
+
+    <section class="section_register">
+    <h1>FOLLE VINDL</h1>
     <h2>Erstelle deinen Account</h2>
 
     <form id="registerForm">
       <div>
         <label>Name</label>
-        <input type="text" id="name" required />
+        <input type="text" id="name" required placeholder="Name"/>
       </div>
       <div>
         <label>Email</label>
-        <input type="email" id="email" required />
+        <input type="email" id="email" required placeholder="E-Mail"/>
       </div>
       <div>
         <label>Password</label>
-        <input type="password" id="password" required />
+        <input type="password" id="password" required placeholder="Passwort"/>
       </div>
       <button type="submit">Registrieren</button>
       <button type="button" id="login">Ich habe bereits einen Account</button>
     </form>
+    </section>
 
     <script src="js/register.js"></script>
   </body>
