@@ -99,7 +99,7 @@ input[type="password"] {
   box-sizing: border-box; /* Verhindert, dass Padding das Feld breiter macht */
   padding: 7px 8px;
   font-family: inherit;
-  font-size: 0.9 rem;
+  font-size: 0.9rem;
   background-color: #ffffff;
   border: 2px solid #000000; /* Dicke schwarze Linie */
 }
@@ -117,22 +117,252 @@ button {
   border: 2px solid #000000; /* Dicke schwarze Linie */
   cursor: pointer;
   text-transform: uppercase; /* Text in Großbuchstaben */
-  transition: transform 0.5s ease;
+  transition: 0.5s ease;
+  color: #000000;
 }
 
 button:hover {
-  transform: scale(1.05); /* Vergrößert den Button leicht beim Hover */
+  /* Erzeugt die dicke Kante unten (4px) und rechts (4px) */
+  box-shadow: 3px 3px 0px #000000; 
 }
 
 /* Primärer Button (Rosa, wie im Entwurf) */
 button[type="submit"] {
-  background-color: #ffb8d1; /* Das Rosa aus dem Bild */
-  color: #000000;
+  background-color: #FFB3D9; /* Das Rosa aus dem Bild */
 }
 
 /* Sekundärer Button (Weiß, "Zurück zum Login" / "Registrieren") */
 button[type="button"] {
   background-color: #ffffff;
-  color: #000000;
+}
+
+
+/* Dashboard */
+.app-header {
+  display: grid;
+  grid-template-columns: 44px 1fr 48px;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 10px 16px;
+  background: var(--paper);
+  border-bottom: 5px solid var(--ink);
+}
+
+.app-logo {
+  width: 38px;
+  height: 52px;
+  object-fit: contain;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+}
+
+.profile-link {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--ink);
+  font-size: 0;
+  text-decoration: none;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+}
+
+.profile-link::before {
+  content: ":)";
+  font-size: 1rem;
+}
+
+.dashboard {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.dashboard > h2 {
+  margin: 28px 0 18px;
+  text-align: center;
+  font-size: 2rem;
+  text-transform: uppercase;
+}
+
+.dashboard-section {
+  padding: 20px 16px;
+  border-top: 2px solid var(--ink);
+}
+
+.dashboard-section h3,
+.section-title h3,
+.chart-section h3 {
+  margin: 0;
+  font-size: 1.55rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.section-title img {
+  width: 34px;
+  height: 34px;
+}
+
+.children-section h3 {
+  margin-bottom: 26px;
+}
+
+.children-section h3::before {
+  content: ":)";
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-right: 10px;
+  border: 4px solid var(--ink);
+  border-radius: 50%;
+  font-size: 1rem;
+}
+
+.children-switcher {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 12px;
+}
+
+.child-button,
+.add-child-button,
+.status-button {
+  width: 100%;
+  min-height: 58px;
+  margin: 0;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  font-size: 1.05rem;
+}
+
+.child-button.active,
+.status-button.active,
+.bottom-nav a.active {
+  background: var(--pink);
+}
+
+.diaper-status-section {
+  background: var(--dry);
+}
+
+.status-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.current-status {
+  display: grid;
+  place-items: center;
+  min-height: 88px;
+  border: 2px solid var(--ink);
+  font-size: 2.35rem;
+  text-transform: uppercase;
+}
+
+.stock-section {
+  background: var(--wet);
+}
+
+.stock-grid,
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.info-box {
+  min-height: 100px;
+  padding: 14px 16px;
+  border: 2px solid var(--ink);
+  background: rgba(255, 253, 247, 0.55);
+}
+
+.info-box.wide {
+  grid-column: 1 / -1;
+}
+
+.info-box p {
+  margin: 0 0 12px;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.info-box strong {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.stock-status,
+.sensor-note {
+  margin-top: 14px;
+  padding: 14px;
+  border: 2px solid var(--ink);
+  text-align: center;
+}
+
+.stock-status {
+  font-size: 1.35rem;
+  text-transform: uppercase;
+}
+
+.sensor-note {
+  font-size: 1rem;
+}
+
+.statistics-section {
+  background: transparent;
+}
+
+.chart-section {
+  margin-top: 26px;
+}
+
+#diaperChart {
+  min-height: 280px;
+  border-left: 4px solid var(--ink);
+  border-bottom: 4px solid var(--ink);
+}
+
+.bottom-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 14px 44px 12px;
+  background: var(--paper);
+  border-top: 5px solid var(--ink);
+}
+
+.bottom-nav a {
+  display: grid;
+  place-items: center;
+  min-height: 64px;
+  color: var(--ink);
+  text-align: center;
+  text-decoration: none;
 }
 
