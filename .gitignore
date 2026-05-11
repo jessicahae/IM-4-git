@@ -1,5 +1,6 @@
-.DS_Store
 config.php
+credentials.md
 .vscode
+.DS_Store
 .env
 node_modules

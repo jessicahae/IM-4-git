@@ -1,11 +1,35 @@
+/* style.css */
 body {
-  margin: 0;
-  min-height: 100vh;
-  background-color: #fffdf7;
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  max-width: 600px;
+  line-height: 1.5;
+}
 
-  background-image:
-    linear-gradient(to bottom, transparent 31px, rgba(120, 160, 220, 0.35) 32px),
-    linear-gradient(to right, transparent 118px, rgba(220, 80, 80, 0.35) 119px, transparent 120px);
+h1 {
+  margin-bottom: 1em;
+}
 
-  background-size: 100% 32px;
+form > div {
+  margin-bottom: 1em;
+}
+
+label {
+  display: inline-block;
+  width: 80px;
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 200px;
+  padding: 4px;
+}
+
+button {
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+p {
+  margin-top: 1em;
 }

@@ -1,31 +1,26 @@
-console.log("login.js ist verbunden");
+// login.js
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
 
-document.getElementById("loginForm")
-    .addEventListener("submit", async (e) => {
-
-        e.preventDefault();
-        console.log("submit");
-
-        const email = document.getElementById("email").
-            value.trim();
-
-        const password = document.getElementById
-            ("password").value.trim();
-
-        console.log(email + " " + password);
-
-        try {
-            const response = await fetch("api/login.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
-            });
-
-            const result = await response.json();
-            console.log("result", result);
-        } catch (error) {
-            console.error("Fehler beim Abruf:", error);
-        }
+  try {
+    const response = await fetch("api/login.php", {
+      method: "POST",
+      // credentials: 'include', // uncomment if front-end & back-end are on different domains
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
     });
-    
+    const result = await response.json();
+
+    if (result.status === "success") {
+      window.location.href = "protected.html";
+    } else {
+      alert(result.message || "Login failed.");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("Something went wrong!");
+  }
+});
