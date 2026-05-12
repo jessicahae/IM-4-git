@@ -24,10 +24,20 @@
     <section class="dashboard-section children-section">
       <h3>Kinder</h3>
 
-      <div class="children-switcher">
-        <button class="child-button active">Max</button>
-        <button class="add-child-button">+ Hinzufügen</button>
-      </div>
+<div class="children-switcher" id="childrenSwitcher">
+  <button type="button" class="child-button active">Max</button>
+  <button type="button" class="add-child-button" id="showAddChildForm">+ Hinzufügen</button>
+</div>
+
+<form class="add-child-form" id="addChildForm" hidden>
+  <input type="text" id="childName" placeholder="Name des Kindes" required />
+  <input type="text" id="sensorId" placeholder="Sensor-ID" required />
+
+  <div class="form-actions">
+    <button type="submit">Speichern</button>
+    <button type="button" id="cancelAddChild">Abbrechen</button>
+  </div>
+</form>
     </section>
 
     <section class="dashboard-section diaper-status-section status-dry">
@@ -110,6 +120,7 @@
   </nav>
 
   <script src="js/protected.js"></script>
+  <script src="js/index.js"></script>
 </body>
 
 
