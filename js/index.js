@@ -70,3 +70,74 @@ document.getElementById("childrenSwitcher").addEventListener("click", (event) =>
     
   }
 });
+
+async function loadDiaperChart() {
+  const response = await fetch("api/diaper_chart.php?sensor=1");
+  const result = await response.json();
+
+  if (result.status !== "success") return;
+
+  const ctx = document.getElementById("diaperChart");
+
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: result.labels,
+      datasets: [{
+        data: result.values,
+        backgroundColor: "#FFB3D9",
+        borderColor: "#000000",
+        borderWidth: 3,
+        borderSkipped: false,
+        barPercentage: 0.7,
+        categoryPercentage: 0.8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => `Windeln: ${context.raw}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            color: "#000000",
+            borderDash: [4, 4]
+          },
+          ticks: {
+            color: "#000000",
+            font: {
+              family: "Patrick Hand",
+              size: 16
+            }
+          }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 3,
+            color: "#000000",
+            font: {
+              family: "Patrick Hand",
+              size: 16
+            }
+          },
+          grid: {
+            color: "#000000",
+            borderDash: [4, 4]
+          }
+        }
+      }
+    }
+  });
+}
+
+loadDiaperChart();
