@@ -1,4 +1,15 @@
 /* style.css */
+
+:root {
+  --ink: #000;
+  --paper: #fffdf7;
+  --pink: #ffb3d9;
+  --dry: rgb(from #edf8ed r g b / 60%);
+  --wet: rgb(from #fff8c9 r g b / 60%);
+  --full: rgb(from #ffd6dc r g b / 60%);
+}
+
+
 body {
 
   margin: 0;
@@ -12,19 +23,15 @@ body {
 
   background-image:
     /* horizontale Linien */
-    repeating-linear-gradient(
-      to bottom,
+    repeating-linear-gradient(to bottom,
       transparent,
       transparent 31px,
-      rgba(120, 160, 220, 0.35) 32px
-    ),
+      rgba(120, 160, 220, 0.35) 32px),
 
     /* eine einzige rote Linie links */
-    linear-gradient(
-      to right,
+    linear-gradient(to right,
       rgba(220, 80, 80, 0.5) 2px,
-      transparent 2px
-    );
+      transparent 2px);
 
   background-size:
     100% 32px,
@@ -39,15 +46,15 @@ body {
     no-repeat;
 }
 
-.image_diaperkid{
-  display:block;
+.image_diaperkid {
+  display: block;
   margin: 0 auto;
   margin-top: 40px;
   max-width: 100%;
-  height:auto;
+  height: auto;
   width: 100px;
 }
-
+  
 h2 {
   font-size: 1.2em;
   margin: 0.5em 0;
@@ -70,16 +77,19 @@ input[type="password"] {
 button {
   padding: 8px 16px;
   cursor: pointer;
+  border: 1px solid #000;
 }
 
 p {
   margin-top: 1em;
 }
 
-.section_register, .section_login {
+.section_register,
+.section_login {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Zentriert alles */
+  align-items: center;
+  /* Zentriert alles */
 }
 
 form {
@@ -93,16 +103,24 @@ input[type="text"],
 input[type="email"],
 input[type="password"] {
   width: 100%;
-  box-sizing: border-box; /* Verhindert, dass Padding das Feld breiter macht */
+  box-sizing: border-box;
+  /* Verhindert, dass Padding das Feld breiter macht */
   padding: 7px 8px;
   font-family: inherit;
   font-size: 0.9rem;
   background-color: #ffffff;
-  border: 2px solid #000000; /* Dicke schwarze Linie */
+  border: 2px solid #000000;
+  /* Dicke schwarze Linie */
 }
 
 input::placeholder {
-  color: #666; /* Etwas grauer für den Platzhalter-Text */
+  color: #666;
+  /* Etwas grauer für den Platzhalter-Text */
+}
+
+input:focus {
+  border-color: #ffb8d1; /* Die gleiche rosa Farbe wie der Button */
+  outline: none; /* Verhindert, dass der orange Standard-Browser-Rahmen trotzdem kommt */
 }
 
 button {
@@ -111,21 +129,24 @@ button {
   font-size: 0.9rem;
   padding: 7px 8px;
   margin-top: 5px;
-  border: 2px solid #000000; /* Dicke schwarze Linie */
+  border: 2px solid #000000;
+  /* Dicke schwarze Linie */
   cursor: pointer;
-  text-transform: uppercase; /* Text in Großbuchstaben */
+  text-transform: uppercase;
+  /* Text in Großbuchstaben */
   transition: 0.5s ease;
   color: #000000;
 }
 
 button:hover {
   /* Erzeugt die dicke Kante unten (4px) und rechts (4px) */
-  box-shadow: 3px 3px 0px #000000; 
+  box-shadow: 3px 3px 0px #000000;
 }
 
 /* Primärer Button (Rosa, wie im Entwurf) */
 button[type="submit"] {
-  background-color: #FFB3D9; /* Das Rosa aus dem Bild */
+  background-color: #FFB3D9;
+  /* Das Rosa aus dem Bild */
 }
 
 /* Sekundärer Button (Weiß, "Zurück zum Login" / "Registrieren") */
@@ -143,7 +164,7 @@ button[type="button"] {
   min-height: 72px;
   padding: 10px 16px;
   background: var(--paper);
-  border-bottom: 5px solid var(--ink);
+  border-bottom: 2.5px solid var(--ink);
 }
 
 .app-logo {
@@ -180,7 +201,7 @@ button[type="button"] {
   margin: 0 auto;
 }
 
-.dashboard > h2 {
+.dashboard>h2 {
   margin: 28px 0 18px;
   text-align: center;
   font-size: 2rem;
@@ -188,8 +209,9 @@ button[type="button"] {
 }
 
 .dashboard-section {
-  padding: 20px 16px;
-  border-top: 2px solid var(--ink);
+  padding: 60px 20px;
+  margin: 20px;
+
 }
 
 .dashboard-section h3,
@@ -335,23 +357,17 @@ button[type="button"] {
 
 #diaperChart {
   min-height: 280px;
-  border-left: 4px solid var(--ink);
-  border-bottom: 4px solid var(--ink);
 }
 
 .bottom-nav {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 12px;
   max-width: 560px;
-  margin: 0 auto;
+  margin: 32px auto 0;
   padding: 14px 44px 12px;
   background: var(--paper);
-  border-top: 5px solid var(--ink);
+  border-top: 2.5px solid var(--ink);
 }
 
 .bottom-nav a {
@@ -363,3 +379,143 @@ button[type="button"] {
   text-decoration: none;
 }
 
+/* Profil */
+.profile-page {
+  max-width: 560px;
+  margin: 0 auto;
+  padding-bottom: 24px;
+}
+
+.profile-page>h2 {
+  margin: 28px 0 18px;
+  text-align: center;
+  font-size: 2rem;
+  text-transform: uppercase;
+}
+
+.profile-avatar-section,
+.profile-section {
+  padding: 20px 16px;
+  border-top: 2px solid var(--ink);
+}
+
+.profile-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.profile-avatar {
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 120px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+  font-size: 4rem;
+}
+
+.profile-primary-button,
+.profile-action-button,
+.logout-button,
+.delete-button {
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.profile-primary-button {
+  min-height: 58px;
+  background: var(--pink);
+  border: 3px solid var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+}
+
+.profile-panel {
+  border: 2px solid var(--ink);
+  padding: 14px 16px;
+  background: rgba(255, 253, 247, 0.45);
+}
+
+.profile-panel h4 {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+}
+
+.profile-panel p,
+.profile-help-text {
+  margin: 0 0 14px;
+  color: #555;
+  font-size: 0.95rem;
+}
+
+.profile-row,
+.profile-panel-header {
+  display: grid;
+  grid-template-columns: 1fr 96px;
+  gap: 12px;
+  align-items: center;
+}
+
+.sensor-field {
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 2px solid var(--ink);
+  background: var(--paper);
+}
+
+.profile-action-button,
+.delete-button {
+  min-height: 54px;
+  margin: 0;
+}
+
+.connection-status {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 12px;
+  border: 2px solid var(--ink);
+  background: #77b96a;
+  color: #fff;
+}
+
+.profile-form {
+  width: 100%;
+}
+
+.profile-form label {
+  display: block;
+  margin: 16px 0 6px;
+  font-size: 1.1rem;
+}
+
+.profile-form input {
+  margin-bottom: 10px;
+}
+
+.logout-button {
+  width: calc(100% - 32px);
+  margin: 20px 16px 80px;
+  min-height: 58px;
+  background: var(--paper);
+}
+
+.add-child-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 12px;
+  border: 2px solid var(--ink);
+}
+
+.add-child-form[hidden] {
+  display: none;
+}
+
+.form-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}

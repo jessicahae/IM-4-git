@@ -12,27 +12,94 @@
 </head>
 
 <body>
-  <h1>Profil</h1>
+  <header class="app-header">
+    <img src="img/logo.png" alt="Folle Vindl Logo" class="app-logo" />
+    <h1>Folle Vindl</h1>
+    <a href="profile.html" class="profile-link active">Profil</a>
+  </header>
 
-  <div class="info">
-    <h2>About This Site</h2>
-    <p>This is a simple authentication demo that shows:</p>
-    <ul>
-      <li>User registration</li>
-      <li>User login</li>
-      <li>Protected content that's only visible to logged-in users</li>
-    </ul>
-    <p>
-      If you try to access the protected page without being logged in, you'll
-      be redirected to the login page.
-    </p>
-  </div>
+  <main class="profile-page">
+    <h2>Profil</h2>
 
-<button id="logoutBtn">Logout</button>
+    <section class="profile-avatar-section">
+      <div class="profile-avatar">☺</div>
+      <button type="button" class="profile-primary-button">Profilbild ändern</button>
+    </section>
 
+    <section class="profile-section">
+      <div class="section-title">
+        <span class="profile-icon">☺</span>
+        <h3>Kinder</h3>
+      </div>
+
+      <article class="profile-panel">
+        <h4>Max</h4>
+        <p>Status: Trocken · Heute: 9 Windeln</p>
+
+        <div class="profile-row">
+          <div class="sensor-field">Sensor: SENSOR-001</div>
+          <button type="button" class="profile-action-button">Ändern</button>
+        </div>
+      </article>
+
+      <p class="profile-help-text">Kinder hinzufügen: Dashboard → Kinder → Hinzufügen</p>
+    </section>
+
+    <section class="profile-section">
+      <div class="section-title">
+        <span class="profile-icon">▣</span>
+        <h3>Vorrat-Sensor</h3>
+      </div>
+
+      <article class="profile-panel">
+        <div class="profile-panel-header">
+          <div>
+            <h4>Vorrat-Sensor Kinderzimmer</h4>
+            <span class="connection-status">Verbunden</span>
+          </div>
+          <button type="button" class="delete-button">⌫</button>
+        </div>
+
+        <div class="profile-row">
+          <div class="sensor-field">Sensor: VORRAT-001</div>
+          <button type="button" class="profile-action-button">Ändern</button>
+        </div>
+      </article>
+
+      <button type="button" class="profile-primary-button">+ Vorrat-Sensor hinzufügen</button>
+    </section>
+
+    <section class="profile-section">
+      <div class="section-title">
+        <span class="profile-icon">♙</span>
+        <h3>Benutzerdaten</h3>
+      </div>
+
+      <form class="profile-form">
+        <label for="username">Benutzername</label>
+        <input type="text" id="username" value="Max Mustermann" />
+
+        <label for="profileEmail">E-Mail</label>
+        <input type="email" id="profileEmail" value="max@example.com" />
+
+        <label for="profilePassword">Passwort</label>
+        <input type="password" id="profilePassword" value="12345678" />
+
+        <button type="button" class="profile-primary-button">Bearbeiten</button>
+      </form>
+    </section>
+
+    <button id="logoutBtn" type="button" class="logout-button">↪ Abmelden</button>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html">Dashboard</a>
+    <a href="profile.html" class="active">Profil</a>
+  </nav>
 
   <script src="js/protected.js"></script>
   <script src="js/logout.js"></script>
 </body>
+
 
 </html>
