@@ -53,8 +53,6 @@ if ($method === 'POST') {
     exit;
 }
 
-document.getElementById("statusChildName").textContent = childName;
-
 http_response_code(405);
 echo json_encode([
     'status' => 'error',

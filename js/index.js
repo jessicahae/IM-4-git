@@ -68,4 +68,12 @@ addChildForm.addEventListener("submit", async (event) => {
   }
 });
 
-document.getElementById("statusChildName").textContent = "Hanna";
+document.getElementById("statusChildName").textContent = childName;addChildForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  // 1. ÄNDERUNG: Wir nennen die Variablen jetzt eindeutig um und sichern uns das ".value"
+  const eingegebenerName = document.getElementById("childName").value.trim();
+  const eingegebeneSensorId = document.getElementById("sensorId").value.trim();
+
+  if (!eingegebenerName || !eingegebeneSensorId) return;
+  });
