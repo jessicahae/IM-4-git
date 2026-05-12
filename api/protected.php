@@ -3,6 +3,8 @@
 session_start();
 
 if (!isset($_SESSION['id_users'])) {
+    // Instead of redirect, return a 401 JSON response
+if (!isset($_SESSION['id_users'])) {
     http_response_code(401);
     header('Content-Type: application/json');
     echo json_encode(["error" => "Unauthorized"]);
@@ -11,6 +13,7 @@ if (!isset($_SESSION['id_users'])) {
 
 echo json_encode([
     "status" => "success",
+    "user_id" => $_SESSION['id_users'],
     "user_id" => $_SESSION['id_users'],
     "email" => $_SESSION['email']
 ]);

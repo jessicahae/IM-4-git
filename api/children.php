@@ -16,6 +16,25 @@ if (!isset($_SESSION['id_users'])) {
 $userId = $_SESSION['id_users'];
 $method = $_SERVER['REQUEST_METHOD'];
 
+if ($method === 'GET') {
+    $stmt = $pdo->prepare("
+        SELECT id, name, id_sensor
+        FROM children
+        WHERE id_users = :id_users
+        ORDER BY id ASC
+    ");
+
+    $stmt->execute([
+        ':id_users' => $userId
+    ]);
+
+    echo json_encode([
+        'status' => 'success',
+        'children' => $stmt->fetchAll(PDO::FETCH_ASSOC)
+    ]);
+    exit;
+}
+
 if ($method === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
