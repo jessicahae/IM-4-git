@@ -1,4 +1,4 @@
-async function requireAuth() {
+const authReady = (async function () {
   const response = await fetch("/api/protected.php", {
     credentials: "include",
   });
@@ -8,5 +8,5 @@ async function requireAuth() {
     return null;
   }
 
-  return response.json(); // { email, user_id }
-}
+  return response.json();
+})();
