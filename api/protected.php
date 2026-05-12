@@ -1,19 +1,18 @@
 <?php
-// index.php (API that returns JSON about the logged-in user)
 session_start();
+header('Content-Type: application/json; charset=utf-8');
 
 if (!isset($_SESSION['id_users'])) {
-    // Instead of redirect, return a 401 JSON response
-if (!isset($_SESSION['id_users'])) {
     http_response_code(401);
-    header('Content-Type: application/json');
-    echo json_encode(["error" => "Unauthorized"]);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Unauthorized'
+    ]);
     exit;
 }
 
 echo json_encode([
-    "status" => "success",
-    "user_id" => $_SESSION['id_users'],
-    "user_id" => $_SESSION['id_users'],
-    "email" => $_SESSION['email']
+    'status' => 'success',
+    'user_id' => $_SESSION['id_users'],
+    'email' => $_SESSION['email'] ?? ''
 ]);
