@@ -32,15 +32,7 @@
         <h3>Kinder</h3>
       </div>
 
-      <article class="profile-panel">
-        <h4>Max</h4>
-        <p>Status: Trocken · Heute: 9 Windeln</p>
-
-        <div class="profile-row">
-          <div class="sensor-field">Sensor: SENSOR-001</div>
-          <button type="button" class="profile-action-button">Ändern</button>
-        </div>
-      </article>
+<div id="profileChildrenList"></div>
 
       <p class="profile-help-text">Kinder hinzufügen: Dashboard → Kinder → Hinzufügen</p>
     </section>
@@ -51,22 +43,19 @@
         <h3>Vorrat-Sensor</h3>
       </div>
 
-      <article class="profile-panel">
-        <div class="profile-panel-header">
-          <div>
-            <h4>Vorrat-Sensor Kinderzimmer</h4>
-            <span class="connection-status">Verbunden</span>
-          </div>
-          <button type="button" class="delete-button">⌫</button>
-        </div>
+<div id="stockSensorList"></div>
 
-        <div class="profile-row">
-          <div class="sensor-field">Sensor: VORRAT-001</div>
-          <button type="button" class="profile-action-button">Ändern</button>
-        </div>
-      </article>
+<form class="add-stock-sensor-form" id="addStockSensorForm" hidden>
+  <input type="text" id="stockSensorNumber" placeholder="Sensor-Nummer" required />
+  <div class="form-actions">
+    <button type="submit">Speichern</button>
+    <button type="button" id="cancelStockSensor">Abbrechen</button>
+  </div>
+</form>
 
-      <button type="button" class="profile-primary-button">+ Vorrat-Sensor hinzufügen</button>
+<button type="button" class="profile-primary-button" id="showStockSensorForm">
+  + Vorrat-Sensor hinzufügen
+</button>
     </section>
 
     <section class="profile-section">
@@ -98,6 +87,7 @@
   </nav>
 
   <script src="js/auth.js"></script>
+  <script src="js/profile.js"></script>
   <script src="js/logout.js"></script>
 </body>
 
