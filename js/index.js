@@ -71,73 +71,53 @@ document.getElementById("childrenSwitcher").addEventListener("click", (event) =>
   }
 });
 
-async function loadDiaperChart() {
-  const response = await fetch("api/diaper_chart.php?sensor=1");
-  const result = await response.json();
+updateStock();
 
-  if (result.status !== "success") return;
+async function updateStock() {
+    try {
+        const response = await fetch("api/get_stock.php");
+        const data = await response.json();
 
-  const ctx = document.getElementById("diaperChart");
+        if (data.status === "success") {
+            const bestand = data.bestand;
+            const avgGesamt = data.durchschnittProTagGesamt; // Der berechnete Wert aus der DB
+            
+            // Wir berechnen die Reichweite: Bestand / Durchschnitt
+            // Falls der Durchschnitt 0 ist (keine Daten), nehmen wir 1 zur Sicherheit
+            const tageReichweite = Math.floor(bestand / (avgGesamt > 0 ? avgGesamt : 1));
 
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: result.labels,
-      datasets: [{
-        data: result.values,
-        backgroundColor: "#FFB3D9",
-        borderColor: "#000000",
-        borderWidth: 3,
-        borderSkipped: false,
-        barPercentage: 0.7,
-        categoryPercentage: 0.8
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          callbacks: {
-            label: (context) => `Windeln: ${context.raw}`
-          }
-        }
-      },
-      scales: {
-        x: {
-          grid: {
-            color: "#000000",
-            borderDash: [4, 4]
-          },
-          ticks: {
-            color: "#000000",
-            font: {
-              family: "Patrick Hand",
-              size: 16
+            // UI-Update
+            // 1. Aktueller Bestand
+            document.querySelector(".stock-grid .info-box:nth-child(1) strong").textContent = `${bestand} Windeln`;
+            
+            // 2. Durchschnittlicher Verbrauch (jetzt dynamisch aus DB)
+            document.querySelector(".stock-grid .info-box:nth-child(2) strong").textContent = avgGesamt;
+            
+            // 3. Reicht für X Tage
+            document.querySelector(".stock-grid .info-box:nth-child(3) strong").textContent = `${tageReichweite} Tage`;
+
+            // Status-Logik & Farbe
+            const stockSection = document.querySelector(".stock-section");
+            const statusText = document.querySelector(".stock-status");
+
+            if (tageReichweite <= 3) {
+                // Pinker Alarm-Modus
+                stockSection.style.backgroundColor = "#ff66b2"; 
+                stockSection.style.color = "white";
+                statusText.textContent = "Status: Windeln nachkaufen!";
+                statusText.style.fontWeight = "bold";
+            } else {
+                // Normaler Modus
+                stockSection.style.backgroundColor = "";
+                stockSection.style.color = "";
+                statusText.textContent = "Status: Vorrat okay";
             }
-          }
-        },
-        y: {
-          beginAtZero: true,
-          ticks: {
-            stepSize: 3,
-            color: "#000000",
-            font: {
-              family: "Patrick Hand",
-              size: 16
-            }
-          },
-          grid: {
-            color: "#000000",
-            borderDash: [4, 4]
-          }
         }
-      }
+    } catch (error) {
+        console.error("Fehler beim Laden der Vorratsdaten:", error);
     }
-  });
 }
 
-loadDiaperChart();
+// Initialer Aufruf und Intervall
+updateStock();
+setInterval(updateStock, 30000); // Alle 30 Sek. prüfen

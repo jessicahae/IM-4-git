@@ -4,7 +4,7 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once '../system/config.php';
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['id_users'])) {
     http_response_code(401);
     echo json_encode(['status' => 'error', 'message' => 'Nicht eingeloggt']);
     exit;
