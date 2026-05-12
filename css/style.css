@@ -43,7 +43,7 @@ body {
   height: auto;
   width: 100px;
 }
-
+  
 h2 {
   font-size: 1.2em;
   margin: 0.5em 0;
@@ -105,6 +105,11 @@ input[type="password"] {
 input::placeholder {
   color: #666;
   /* Etwas grauer für den Platzhalter-Text */
+}
+
+input:focus {
+  border-color: #ffb8d1; /* Die gleiche rosa Farbe wie der Button */
+  outline: none; /* Verhindert, dass der orange Standard-Browser-Rahmen trotzdem kommt */
 }
 
 button {
