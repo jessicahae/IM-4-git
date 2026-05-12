@@ -81,4 +81,127 @@ async function deleteChild(childId) {
   }
 }
 
+const stockSensorList = document.getElementById("stockSensorList");
+const showStockSensorForm = document.getElementById("showStockSensorForm");
+const addStockSensorForm = document.getElementById("addStockSensorForm");
+const cancelStockSensor = document.getElementById("cancelStockSensor");
+const stockSensorNumber = document.getElementById("stockSensorNumber");
+
+async function loadStockSensors() {
+  const response = await fetch("api/sensors.php", {
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (result.status !== "success") return;
+
+  stockSensorList.innerHTML = "";
+
+  result.sensors.forEach((sensor) => {
+    stockSensorList.appendChild(createStockSensorPanel(sensor));
+  });
+}
+
+function createStockSensorPanel(sensor) {
+  const panel = document.createElement("article");
+  panel.className = "profile-panel";
+
+  panel.innerHTML = `
+    <div class="profile-panel-header">
+      <div>
+        <h4>Vorrat-Sensor</h4>
+        <span class="connection-status">Verbunden</span>
+      </div>
+      <button type="button" class="delete-button">Papierkorb</button>
+    </div>
+
+    <div class="profile-row">
+      <input type="text" value="${sensor.number}" class="sensor-input" />
+      <button type="button" class="profile-action-button">Ändern</button>
+    </div>
+  `;
+
+  const sensorInput = panel.querySelector(".sensor-input");
+  const editButton = panel.querySelector(".profile-action-button");
+  const deleteButton = panel.querySelector(".delete-button");
+
+  editButton.addEventListener("click", () => {
+    updateStockSensor(sensor.id, sensorInput.value);
+  });
+
+  deleteButton.addEventListener("click", () => {
+    deleteStockSensor(sensor.id);
+  });
+
+  return panel;
+}
+
+showStockSensorForm.addEventListener("click", () => {
+  addStockSensorForm.hidden = false;
+  stockSensorNumber.focus();
+});
+
+cancelStockSensor.addEventListener("click", () => {
+  addStockSensorForm.reset();
+  addStockSensorForm.hidden = true;
+});
+
+addStockSensorForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const number = stockSensorNumber.value.trim();
+  if (!number) return;
+
+  const response = await fetch("api/sensors.php", {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ number }),
+  });
+
+  const result = await response.json();
+
+  if (result.status === "success") {
+    addStockSensorForm.reset();
+    addStockSensorForm.hidden = true;
+    loadStockSensors();
+  } else {
+    alert(result.message || "Vorrat-Sensor konnte nicht gespeichert werden.");
+  }
+});
+
+async function updateStockSensor(id, number) {
+  const response = await fetch("api/sensors.php", {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, number }),
+  });
+
+  const result = await response.json();
+
+  if (result.status === "success") {
+    loadStockSensors();
+  } else {
+    alert(result.message || "Vorrat-Sensor konnte nicht geändert werden.");
+  }
+}
+
+async function deleteStockSensor(id) {
+  const response = await fetch(`api/sensors.php?id=${id}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (result.status === "success") {
+    loadStockSensors();
+  } else {
+    alert(result.message || "Vorrat-Sensor konnte nicht gelöscht werden.");
+  }
+}
+
 loadProfileChildren();
+loadStockSensors();
