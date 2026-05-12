@@ -13,7 +13,7 @@ cancelButton.addEventListener("click", () => {
   addChildForm.hidden = true;
 });
 
-addChildForm.addEventListener("submit", (event) => {
+addChildForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const childName = document.getElementById("childName").value.trim();
@@ -21,18 +21,51 @@ addChildForm.addEventListener("submit", (event) => {
 
   if (!childName || !sensorId) return;
 
-  document.querySelectorAll(".child-button").forEach((button) => {
-    button.classList.remove("active");
-  });
+  try {
+    // 1. DATEN AN PHP SENDEN (Der fehlende Schritt)
+    const response = await fetch("api/children.php", {
+      method: "POST",
+      credentials: 'include',
+      headers: { 
+        "Content-Type": "application/json" 
+      },
+      // Wir senden genau die Keys ('name' und 'id_sensor'), die dein PHP erwartet:
+      body: JSON.stringify({ 
+        name: childName, 
+        id_sensor: sensorId 
+      }),
+    });
 
-  const childButton = document.createElement("button");
-  childButton.type = "button";
-  childButton.className = "child-button active";
-  childButton.textContent = childName;
-  childButton.dataset.sensorId = sensorId;
+    const result = await response.json();
 
-  childrenSwitcher.insertBefore(childButton, showFormButton);
+    // 2. WENN PHP ERFOLG MELDET -> WEBSITE AKTUALISIEREN
+    if (result.status === "success") {
+      
+      document.querySelectorAll(".child-button").forEach((button) => {
+        button.classList.remove("active");
+      });
 
-  addChildForm.reset();
-  addChildForm.hidden = true;
+      const childButton = document.createElement("button");
+      childButton.type = "button";
+      childButton.className = "child-button active";
+      childButton.textContent = childName;
+      // Optional: Du könntest hier auch die neue Datenbank-ID speichern (result.child.id)
+      childButton.dataset.sensorId = sensorId; 
+
+      childrenSwitcher.insertBefore(childButton, showFormButton);
+
+      addChildForm.reset();
+      addChildForm.hidden = true;
+      
+    } else {
+      // Wenn das PHP-Skript einen Fehler meldet (z.B. nicht eingeloggt)
+      alert("Fehler: " + (result.message || "Konnte nicht gespeichert werden."));
+    }
+
+  } catch (error) {
+    console.error("Fetch-Fehler:", error);
+    alert("Netzwerkfehler: Es konnte keine Verbindung zum Server hergestellt werden.");
+  }
 });
+
+document.getElementById("statusChildName").textContent = "Hanna";

@@ -1,12 +1,10 @@
 <?php
-
-<?php
 session_start();
 header('Content-Type: application/json; charset=utf-8');
 
 require_once '../system/config.php';
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['id_users'])) {
     http_response_code(401);
     echo json_encode([
         'status' => 'error',
@@ -15,7 +13,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$userId = $_SESSION['user_id'];
+$userId = $_SESSION['id_users'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'POST') {
@@ -34,12 +32,12 @@ if ($method === 'POST') {
     }
 
     $stmt = $pdo->prepare("
-        INSERT INTO children (user_id, name, id_sensor)
-        VALUES (:user_id, :name, :id_sensor)
+        INSERT INTO children (id_users, name, id_sensor)
+        VALUES (:id_users, :name, :id_sensor)
     ");
 
     $stmt->execute([
-        ':user_id' => $userId,
+        ':id_users' => $userId,
         ':name' => $name,
         ':id_sensor' => $idSensor
     ]);
@@ -55,12 +53,13 @@ if ($method === 'POST') {
     exit;
 }
 
+document.getElementById("statusChildName").textContent = childName;
+
 http_response_code(405);
 echo json_encode([
     'status' => 'error',
     'message' => 'Methode nicht erlaubt'
 ]);
-
 
 
 ?>
