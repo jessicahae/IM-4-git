@@ -72,6 +72,70 @@ if ($method === 'POST') {
     exit;
 }
 
+if ($method === 'PUT') {
+    $data = json_decode(file_get_contents('php://input'), true);
+
+    $childId = $data['id'] ?? '';
+    $idSensor = trim($data['id_sensor'] ?? '');
+
+    if ($childId === '' || $idSensor === '') {
+        http_response_code(400);
+        echo json_encode(['status' => 'error', 'message' => 'Kind und Sensor-ID sind erforderlich']);
+        exit;
+    }
+
+    $stmt = $pdo->prepare("
+        UPDATE children
+        SET id_sensor = :id_sensor
+        WHERE id = :id AND id_users = :id_users
+    ");
+
+    $stmt->execute([
+        ':id_sensor' => $idSensor,
+        ':id' => $childId,
+        ':id_users' => $userId
+    ]);
+
+    echo json_encode(['status' => 'success']);
+    exit;
+}
+
+if ($method === 'DELETE') {
+    $childId = $_GET['id'] ?? '';
+
+    if ($childId === '') {
+        http_response_code(400);
+        echo json_encode(['status' => 'error', 'message' => 'Kind-ID fehlt']);
+        exit;
+    }
+
+    $countStmt = $pdo->prepare("
+        SELECT COUNT(*)
+        FROM children
+        WHERE id_users = :id_users
+    ");
+    $countStmt->execute([':id_users' => $userId]);
+
+    if ((int)$countStmt->fetchColumn() <= 1) {
+        http_response_code(400);
+        echo json_encode(['status' => 'error', 'message' => 'Das letzte Kind kann nicht gelöscht werden']);
+        exit;
+    }
+
+    $stmt = $pdo->prepare("
+        DELETE FROM children
+        WHERE id = :id AND id_users = :id_users
+    ");
+
+    $stmt->execute([
+        ':id' => $childId,
+        ':id_users' => $userId
+    ]);
+
+    echo json_encode(['status' => 'success']);
+    exit;
+}
+
 http_response_code(405);
 echo json_encode([
     'status' => 'error',
