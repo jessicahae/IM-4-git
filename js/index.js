@@ -149,6 +149,72 @@ async function refreshDashboardStock() {
     }
 }
 
-// Nur diese beiden Zeilen am Ende der Datei stehen lassen:
+async function loadDiaperChart(sensorId = 1) {
+  const response = await fetch(`api/diaper_chart.php?sensor=${sensorId}`, {
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (result.status !== "success") return;
+
+  const chartCanvas = document.getElementById("diaperChart");
+
+  new Chart(chartCanvas, {
+    type: "bar",
+    data: {
+      labels: result.labels,
+      datasets: [
+        {
+          data: result.values,
+          backgroundColor: "#FFB3D9",
+          borderColor: "#000000",
+          borderWidth: 3,
+          borderSkipped: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+      scales: {
+        x: {
+          ticks: {
+            color: "#000000",
+            font: {
+              family: "Patrick Hand",
+              size: 16,
+            },
+          },
+          grid: {
+            color: "#000000",
+          },
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+            color: "#000000",
+            font: {
+              family: "Patrick Hand",
+              size: 16,
+            },
+          },
+          grid: {
+            color: "#000000",
+          },
+        },
+      },
+    },
+  });
+}
+
+loadChildren();
+loadDiaperChart();
 refreshDashboardStock();
-setInterval(refreshDashboardStock, 15000); // Alle 15 Sekunden prüfen
+setInterval(refreshDashboardStock, 15000);
