@@ -107,53 +107,48 @@ document.getElementById("childrenSwitcher").addEventListener("click", (event) =>
   }
 });
 
-updateStock();
+refreshDashboardStock();
 
-async function updateStock() {
+async function refreshDashboardStock() {
     try {
         const response = await fetch("api/get_stock.php");
         const data = await response.json();
 
         if (data.status === "success") {
+            // Werte aus dem PHP (data.bestand und data.durchschnitt)
             const bestand = data.bestand;
-            const avgGesamt = data.durchschnittProTagGesamt; // Der berechnete Wert aus der DB
-            
-            // Wir berechnen die Reichweite: Bestand / Durchschnitt
-            // Falls der Durchschnitt 0 ist (keine Daten), nehmen wir 1 zur Sicherheit
-            const tageReichweite = Math.floor(bestand / (avgGesamt > 0 ? avgGesamt : 1));
+            const avg = data.durchschnitt;
+            const tage = avg > 0 ? Math.floor(bestand / avg) : 0;
 
-            // UI-Update
-            // 1. Aktueller Bestand
-            document.querySelector(".stock-grid .info-box:nth-child(1) strong").textContent = `${bestand} Windeln`;
-            
-            // 2. Durchschnittlicher Verbrauch (jetzt dynamisch aus DB)
-            document.querySelector(".stock-grid .info-box:nth-child(2) strong").textContent = avgGesamt;
-            
-            // 3. Reicht für X Tage
-            document.querySelector(".stock-grid .info-box:nth-child(3) strong").textContent = `${tageReichweite} Tage`;
+            // UI-Update: Wir befüllen die 3 Boxen nacheinander
+            const infoBoxes = document.querySelectorAll(".stock-grid .info-box strong");
+            if (infoBoxes.length >= 3) {
+                infoBoxes[0].textContent = `${bestand} Windeln`;
+                infoBoxes[1].textContent = avg;
+                infoBoxes[2].textContent = `${tage} Tage`;
+            }
 
-            // Status-Logik & Farbe
+            // Design-Check: Pinker Alarm
             const stockSection = document.querySelector(".stock-section");
             const statusText = document.querySelector(".stock-status");
 
-            if (tageReichweite <= 3) {
-                // Pinker Alarm-Modus
-                stockSection.style.backgroundColor = "#ff66b2"; 
+            if (tage <= 3) {
+                stockSection.style.backgroundColor = "#ff66b2"; // Pink
                 stockSection.style.color = "white";
                 statusText.textContent = "Status: Windeln nachkaufen!";
-                statusText.style.fontWeight = "bold";
             } else {
-                // Normaler Modus
-                stockSection.style.backgroundColor = "";
+                stockSection.style.backgroundColor = ""; // Standard (weiß/beige)
                 stockSection.style.color = "";
                 statusText.textContent = "Status: Vorrat okay";
             }
+        } else {
+            console.error("Datenbank meldet:", data.message);
         }
-    } catch (error) {
-        console.error("Fehler beim Laden der Vorratsdaten:", error);
+    } catch (err) {
+        console.error("Verbindung zum Server fehlgeschlagen");
     }
 }
 
-// Initialer Aufruf und Intervall
-updateStock();
-setInterval(updateStock, 30000); // Alle 30 Sek. prüfen
+// Nur diese beiden Zeilen am Ende der Datei stehen lassen:
+refreshDashboardStock();
+setInterval(refreshDashboardStock, 15000); // Alle 15 Sekunden prüfen
