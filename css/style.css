@@ -1,4 +1,15 @@
 /* style.css */
+
+:root {
+  --ink: #000;
+  --paper: #fffdf7;
+  --pink: #ffb3d9;
+  --dry: rgb(from #edf8ed r g b / 60%);
+  --wet: rgb(from #fff8c9 r g b / 60%);
+  --full: rgb(from #ffd6dc r g b / 60%);
+}
+
+
 body {
 
   margin: 0;
@@ -153,7 +164,7 @@ button[type="button"] {
   min-height: 72px;
   padding: 10px 16px;
   background: var(--paper);
-  border-bottom: 5px solid var(--ink);
+  border-bottom: 2.5px solid var(--ink);
 }
 
 .app-logo {
@@ -198,8 +209,9 @@ button[type="button"] {
 }
 
 .dashboard-section {
-  padding: 20px 16px;
-  border-top: 2px solid var(--ink);
+  padding: 60px 20px;
+  margin: 20px;
+
 }
 
 .dashboard-section h3,
@@ -345,8 +357,6 @@ button[type="button"] {
 
 #diaperChart {
   min-height: 280px;
-  border-left: 4px solid var(--ink);
-  border-bottom: 4px solid var(--ink);
 }
 
 .bottom-nav {
@@ -357,7 +367,7 @@ button[type="button"] {
   margin: 32px auto 0;
   padding: 14px 44px 12px;
   background: var(--paper);
-  border-top: 5px solid var(--ink);
+  border-top: 2.5px solid var(--ink);
 }
 
 .bottom-nav a {
