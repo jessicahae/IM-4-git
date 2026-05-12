@@ -161,8 +161,8 @@ button[type="button"] {
   grid-template-columns: 44px 1fr 48px;
   align-items: center;
   gap: 12px;
-  min-height: 72px;
-  padding: 10px 16px;
+  min-height: 60px;
+  padding: 5px 16px;
   background: var(--paper);
   border-bottom: 2.5px solid var(--ink);
 }
