@@ -157,3 +157,6 @@ async function updateStock() {
 // Initialer Aufruf und Intervall
 updateStock();
 setInterval(updateStock, 30000); // Alle 30 Sek. prüfen
+
+loadChildren();
+loadDiaperChart();
