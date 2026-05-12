@@ -1,33 +1,7 @@
-async function checkAuth() {
-  try {
-    const response = await fetch("/api/protected.php", {
-      credentials: "include",
-    });
+window.addEventListener("load", async function () {
+  const user = await requireAuth();
+  if (!user) return; // requireAuth already redirected
 
-    if (response.status === 401) {
-      window.location.href = "/login.html";
-      return false;
-    }
-
-    const result = await response.json();
-
-    const userEmail = document.getElementById("userEmail");
-    const userId = document.getElementById("userId");
-
-    if (userEmail) userEmail.textContent = result.email;
-    if (userId) userId.textContent = result.user_id;
-
-    // // Display user data in the protected content div
-    // document.getElementById("userEmail").textContent = result.email;
-    // document.getElementById("userId").textContent = result.user_id;
-
-    return true;
-  } catch (error) {
-    console.error("Auth check failed:", error);
-    window.location.href = "/login.html";
-    return false;
-  }
-}
-
-// Check auth when page loads
-window.addEventListener("load", checkAuth);
+  document.getElementById("userEmail").textContent = user.email;
+  document.getElementById("userId").textContent = user.user_id;
+});
