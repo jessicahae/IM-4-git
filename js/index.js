@@ -13,67 +13,60 @@ cancelButton.addEventListener("click", () => {
   addChildForm.hidden = true;
 });
 
-addChildForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
+addChildForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  const childName = document.getElementById("childName").value.trim();
-  const sensorId = document.getElementById("sensorId").value.trim();
-
-  if (!childName || !sensorId) return;
+  const nameVal = document.getElementById("childName").value.trim();
+  const sensorVal = document.getElementById("sensorId").value.trim();
+  
+  if (!nameVal || !sensorVal) return;
 
   try {
-    // 1. DATEN AN PHP SENDEN (Der fehlende Schritt)
-    const response = await fetch("api/children.php", {
-      method: "POST",
-      credentials: 'include',
-      headers: { 
-        "Content-Type": "application/json" 
-      },
-      // Wir senden genau die Keys ('name' und 'id_sensor'), die dein PHP erwartet:
-      body: JSON.stringify({ 
-        name: childName, 
-        id_sensor: sensorId 
-      }),
+    const res = await fetch("api/children.php", {
+      method: "POST", credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: nameVal, id_sensor: sensorVal })
     });
-
-    const result = await response.json();
-
-    // 2. WENN PHP ERFOLG MELDET -> WEBSITE AKTUALISIEREN
-    if (result.status === "success") {
+    
+    if ((await res.json()).status === "success") {
+      document.querySelectorAll(".child-button").forEach(b => b.classList.remove("active"));
       
-      document.querySelectorAll(".child-button").forEach((button) => {
-        button.classList.remove("active");
+      const btn = Object.assign(document.createElement("button"), {
+        type: "button", className: "child-button active", textContent: nameVal
       });
-
-      const childButton = document.createElement("button");
-      childButton.type = "button";
-      childButton.className = "child-button active";
-      childButton.textContent = childName;
-      // Optional: Du könntest hier auch die neue Datenbank-ID speichern (result.child.id)
-      childButton.dataset.sensorId = sensorId; 
-
-      childrenSwitcher.insertBefore(childButton, showFormButton);
-
+      btn.dataset.sensorId = sensorVal;
+      
+      childrenSwitcher.insertBefore(btn, showFormButton);
+      
+      document.querySelectorAll(".childNameDisplay").forEach(span => {
+        span.textContent = nameVal;
+      });
+      
       addChildForm.reset();
       addChildForm.hidden = true;
-      
-    } else {
-      // Wenn das PHP-Skript einen Fehler meldet (z.B. nicht eingeloggt)
-      alert("Fehler: " + (result.message || "Konnte nicht gespeichert werden."));
     }
-
-  } catch (error) {
-    console.error("Fetch-Fehler:", error);
-    alert("Netzwerkfehler: Es konnte keine Verbindung zum Server hergestellt werden.");
+  } catch {
+    alert("Netzwerkfehler beim Speichern.");
   }
 });
 
-document.getElementById("statusChildName").textContent = childName;addChildForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  // 1. ÄNDERUNG: Wir nennen die Variablen jetzt eindeutig um und sichern uns das ".value"
-  const eingegebenerName = document.getElementById("childName").value.trim();
-  const eingegebeneSensorId = document.getElementById("sensorId").value.trim();
-
-  if (!eingegebenerName || !eingegebeneSensorId) return;
-  });
+// Überwacht alle Klicks im Kinder-Menü oben
+document.getElementById("childrenSwitcher").addEventListener("click", (event) => {
+  
+  // Prüfen, ob genau ein Kind-Button angeklickt wurde
+  if (event.target.classList.contains("child-button")) {
+    
+    // 1. Allen Buttons die "active" Farbe wegnehmen
+    document.querySelectorAll(".child-button").forEach(b => b.classList.remove("active"));
+    
+    // 2. Dem angeklickten Button die "active" Farbe geben
+    event.target.classList.add("active");
+    
+    // 3. Den Namen des angeklickten Buttons auslesen
+    const clickedName = event.target.textContent;
+    
+    // 4. Den Namen überall im Dashboard aktualisieren!
+    document.querySelectorAll(".childNameDisplay").forEach(el => el.textContent = clickedName);
+    
+  }
+});
