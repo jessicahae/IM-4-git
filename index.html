@@ -7,8 +7,8 @@
   <title>Dashboard</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -24,19 +24,19 @@
     <section class="dashboard-section children-section">
       <h3>Kinder</h3>
 
-<div class="children-switcher" id="childrenSwitcher">
-  <button type="button" class="add-child-button" id="showAddChildForm">+ Hinzufügen</button>
-</div>
+      <div class="children-switcher" id="childrenSwitcher">
+        <button type="button" class="add-child-button" id="showAddChildForm">+ Hinzufügen</button>
+      </div>
 
-<form class="add-child-form" id="addChildForm" hidden>
-  <input type="text" id="childName" placeholder="Name des Kindes" required />
-  <input type="text" id="sensorId" placeholder="Sensor-ID" required />
+      <form class="add-child-form" id="addChildForm" hidden>
+        <input type="text" id="childName" placeholder="Name des Kindes" required />
+        <input type="text" id="sensorId" placeholder="Sensor-ID" required />
 
-  <div class="form-actions">
-    <button type="submit">Speichern</button>
-    <button type="button" id="cancelAddChild">Abbrechen</button>
-  </div>
-</form>
+        <div class="form-actions">
+          <button type="submit">Speichern</button>
+          <button type="button" id="cancelAddChild">Abbrechen</button>
+        </div>
+      </form>
     </section>
 
     <section class="dashboard-section diaper-status-section status-dry">
@@ -62,22 +62,22 @@
       <div class="stock-grid">
         <article class="info-box">
           <p>Aktueller Bestand</p>
-          <strong>24 Windeln</strong>
+          <strong id="display-bestand">... lade</strong>
         </article>
 
         <article class="info-box">
           <p>Ø Verbrauch/Tag</p>
-          <strong>8.9</strong>
+          <strong id="display-verbrauch">...</strong>
         </article>
 
         <article class="info-box wide">
           <p>Reicht für</p>
-          <strong>2 Tage</strong>
+          <strong id="display-reichweite">...</strong>
         </article>
       </div>
 
-      
-  <div class="stock-status">Status: Bald nötig</div>
+
+      <div class="stock-status">Status: Bald nötig</div>
 
       <p class="sensor-note">Vorrat wird automatisch vom Sensor erfasst</p>
     </section>
@@ -114,7 +114,7 @@
     <a href="profile.html">Profil</a>
   </nav>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/index.js"></script>
 </body>

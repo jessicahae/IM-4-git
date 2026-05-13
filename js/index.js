@@ -1,3 +1,11 @@
+async function init() {
+    await loadChildren(); // Erst Kinder laden und Buttons erstellen
+    refreshStock();       // Dann Bestand für das (nun aktive) Kind holen
+}
+
+
+
+
 const showFormButton = document.getElementById("showAddChildForm");
 const addChildForm = document.getElementById("addChildForm");
 const cancelButton = document.getElementById("cancelAddChild");
@@ -89,66 +97,62 @@ const btn = createChildButton(
 // Überwacht alle Klicks im Kinder-Menü oben
 document.getElementById("childrenSwitcher").addEventListener("click", (event) => {
   
-  // Prüfen, ob genau ein Kind-Button angeklickt wurde
   if (event.target.classList.contains("child-button")) {
-    
-    // 1. Allen Buttons die "active" Farbe wegnehmen
+    // 1. CSS Klassen tauschen
     document.querySelectorAll(".child-button").forEach(b => b.classList.remove("active"));
-    
-    // 2. Dem angeklickten Button die "active" Farbe geben
     event.target.classList.add("active");
     
-    // 3. Den Namen des angeklickten Buttons auslesen
+    // 2. Namen aktualisieren
     const clickedName = event.target.textContent;
-    
-    // 4. Den Namen überall im Dashboard aktualisieren!
     document.querySelectorAll(".childNameDisplay").forEach(el => el.textContent = clickedName);
     
+    // 3. WICHTIG: Vorrat für DIESES Kind neu laden
+    refreshStock(); 
   }
 });
 
-refreshDashboardStock();
+refreshStock();
 
-async function refreshDashboardStock() {
-    try {
-        const response = await fetch("api/get_stock.php");
-        const data = await response.json();
+async function refreshStock() {
+  // 1. Den aktuell aktiven Kind-Button finden
+  const activeChildButton = document.querySelector(".child-button.active");
+  
+  // Wenn kein Kind aktiv ist, können wir nichts laden
+  if (!activeChildButton) return;
 
-        if (data.status === "success") {
-            // Werte aus dem PHP (data.bestand und data.durchschnitt)
-            const bestand = data.bestand;
-            const avg = data.durchschnitt;
-            const tage = avg > 0 ? Math.floor(bestand / avg) : 0;
+  const sensorId = activeChildButton.dataset.sensorId;
 
-            // UI-Update: Wir befüllen die 3 Boxen nacheinander
-            const infoBoxes = document.querySelectorAll(".stock-grid .info-box strong");
-            if (infoBoxes.length >= 3) {
-                infoBoxes[0].textContent = `${bestand} Windeln`;
-                infoBoxes[1].textContent = avg;
-                infoBoxes[2].textContent = `${tage} Tage`;
-            }
+  try {
+    // 2. Die Sensor-ID als Parameter an PHP schicken
+    const response = await fetch(`api/get_stock.php?sensor_id=${sensorId}`);
+    const data = await response.json();
 
-            // Design-Check: Pinker Alarm
-            const stockSection = document.querySelector(".stock-section");
-            const statusText = document.querySelector(".stock-status");
+    if (data.status === "success") {
+      const bestand = data.bestand; 
+      const verbrauch = data.durchschnitt;
+      const tage = verbrauch > 0 ? Math.floor(bestand / verbrauch) : 0;
 
-            if (tage <= 3) {
-                stockSection.style.backgroundColor = "#ff66b2"; // Pink
-                stockSection.style.color = "white";
-                statusText.textContent = "Status: Windeln nachkaufen!";
-            } else {
-                stockSection.style.backgroundColor = ""; // Standard (weiß/beige)
-                stockSection.style.color = "";
-                statusText.textContent = "Status: Vorrat okay";
-            }
-        } else {
-            console.error("Datenbank meldet:", data.message);
-        }
-    } catch (err) {
-        console.error("Verbindung zum Server fehlgeschlagen");
+      document.getElementById("display-bestand").textContent = bestand + " Windeln";
+      document.getElementById("display-verbrauch").textContent = verbrauch;
+      document.getElementById("display-reichweite").textContent = tage + " Tage";
+
+      const section = document.querySelector(".stock-section");
+      const statusText = document.querySelector(".stock-status");
+
+      if (tage <= 3) {
+        section.style.backgroundColor = "#ff66b2";
+        section.style.color = "white";
+        statusText.textContent = "Status: Windeln nachkaufen!";
+      } else {
+        section.style.backgroundColor = ""; 
+        section.style.color = "";
+        statusText.textContent = "Status: Vorrat okay";
+      }
     }
+  } catch (e) {
+    console.error("Fehler beim Abrufen der Bestandsdaten", e);
+  }
 }
 
-// Nur diese beiden Zeilen am Ende der Datei stehen lassen:
-refreshDashboardStock();
-setInterval(refreshDashboardStock, 15000); // Alle 15 Sekunden prüfen
+init(); // Starte den Ablauf
+setInterval(refreshStock, 30000);

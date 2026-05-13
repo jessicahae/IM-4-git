@@ -2,34 +2,38 @@
 require_once("../system/config.php");
 header('Content-Type: application/json');
 
+// Wir holen die Sensor-ID aus der Anfrage (z.B. get_stock.php?sensor_id=1)
+$sensorId = isset($_GET['sensor_id']) ? intval($_GET['sensor_id']) : 0;
+
+if ($sensorId === 0) {
+    echo json_encode(["status" => "error", "message" => "Keine Sensor-ID übergeben"]);
+    exit;
+}
+
 try {
-    // 1. Aktuellen Bestand holen (Letzter Eintrag in der Tabelle 'stock')
-    // Laut deinem Screenshot nutzen wir die Spalte 'bestand'
-    $stmtStock = $pdo->query("SELECT amount FROM stock ORDER BY id_stock DESC LIMIT 1");
+    // 1. BESTAND für den AKTIVEN Sensor
+    $stmtStock = $pdo->prepare("SELECT amount FROM stock WHERE sensors_number = ? ORDER BY id DESC LIMIT 1");
+    $stmtStock->execute([$sensorId]);
     $stockRow = $stmtStock->fetch(PDO::FETCH_ASSOC);
     $aktuellerBestand = $stockRow ? intval($stockRow['amount']) : 0;
 
-    // 2. Durchschnittsverbrauch pro Kind berechnen
-    // Wir nehmen die Summe aller 'amount'-Werte (verbrauchte Windeln) 
-    // und teilen sie durch die Anzahl der Tage, an denen Daten existieren.
-    // Danach teilen wir das durch die Anzahl der Kinder (angenommen du hast diese Info).
-    
-    // Einfachere Variante für den Anfang: Durchschnitt aller 'amount' Einträge pro Tag
-    $stmtAvg = $pdo->query("SELECT AVG(daily_sum) as schnitt FROM (
-                                SELECT SUM(amount) as daily_sum 
+    // 2. DURCHSCHNITT für den AKTIVEN Sensor
+    $stmtAvg = $pdo->prepare("SELECT AVG(daily_usage) as schnitt FROM (
+                                SELECT COUNT(*) as daily_usage 
                                 FROM stock 
+                                WHERE sensors_number = ? 
                                 GROUP BY DATE(time)
-                            ) as daily_totals");
+                            ) as totals");
+    $stmtAvg->execute([$sensorId]);
     $avgRow = $stmtAvg->fetch(PDO::FETCH_ASSOC);
-    $durchschnittGesamt = $avgRow['schnitt'] ? floatval($avgRow['schnitt']) : 8.0;
+    $durchschnitt = ($avgRow && $avgRow['schnitt'] > 0) ? floatval($avgRow['schnitt']) : 8.0;
 
     echo json_encode([
         "status" => "success",
-        "amount" => $aktuellerBestand,
-        "durchschnittProTagGesamt" => round($durchschnittGesamt, 1)
+        "bestand" => $aktuellerBestand,
+        "durchschnitt" => round($durchschnitt, 1)
     ]);
+
 } catch (Exception $e) {
     echo json_encode(["status" => "error", "message" => $e->getMessage()]);
 }
-
-?>
