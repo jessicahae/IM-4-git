@@ -68,18 +68,6 @@ label {
   display: none;
 }
 
-input[type="email"],
-input[type="password"] {
-  width: 200px;
-  padding: 4px;
-}
-
-button {
-  padding: 8px 16px;
-  cursor: pointer;
-  border: 1px solid #000;
-}
-
 p {
   margin-top: 1em;
 }
@@ -299,15 +287,6 @@ button[type="button"] {
   margin-bottom: 18px;
 }
 
-.current-status {
-  display: grid;
-  place-items: center;
-  min-height: 88px;
-  border: 2px solid var(--ink);
-  font-size: 2.35rem;
-  text-transform: uppercase;
-}
-
 .stock-section {
   background: var(--wet);
 }
@@ -343,8 +322,7 @@ button[type="button"] {
   line-height: 1.05;
 }
 
-.stock-status,
-.sensor-note {
+.stock-status {
   margin-top: 14px;
   padding: 14px;
   border: 2px solid var(--ink);
@@ -354,10 +332,6 @@ button[type="button"] {
 .stock-status {
   font-size: 1.35rem;
   text-transform: uppercase;
-}
-
-.sensor-note {
-  font-size: 1rem;
 }
 
 .statistics-section {
@@ -415,17 +389,6 @@ button[type="button"] {
   flex-direction: column;
   align-items: center;
   gap: 18px;
-}
-
-.profile-avatar {
-  display: grid;
-  place-items: center;
-  width: 120px;
-  height: 120px;
-  border: 3px solid var(--ink);
-  border-radius: 50%;
-  background: var(--paper);
-  font-size: 4rem;
 }
 
 .profile-primary-button,
@@ -559,7 +522,7 @@ button[type="button"] {
 
 .avatar-options {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   width: 100%;
 }
