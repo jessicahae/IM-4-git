@@ -9,7 +9,7 @@ const addChildForm = document.getElementById("addChildForm");
 const cancelButton = document.getElementById("cancelAddChild");
 const childrenSwitcher = document.getElementById("childrenSwitcher");
 let diaperChart = null;
-
+let statusTimer = null;
 
 function createChildButton(child, isActive = false) {
   const button = document.createElement("button");
@@ -50,8 +50,6 @@ async function loadChildren() {
 
       loadDiaperStats(firstChild.id_sensor);
       loadDiaperChart(firstChild.id_sensor);
-
-      console.log(firstChild.id_sensor);
 
       loadDiaperStatus(firstChild.id_sensor);
       if (statusTimer) clearInterval(statusTimer);
@@ -264,8 +262,6 @@ async function loadDiaperStats(sensorId) {
 
 init();
 setInterval(refreshStock, 30000);
-
-let statusTimer; // Eigener Timer, getrennt vom Rest
 
 async function loadDiaperStatus(sensorId) {
   try {

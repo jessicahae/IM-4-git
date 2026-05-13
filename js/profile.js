@@ -90,8 +90,7 @@ userForm.addEventListener("submit", async (event) => {
     loadUserData();
   } else {
     alert(result.message || "Benutzerdaten konnten nicht gespeichert werden.");
-  }
-});
+  };
 
 
 const profileChildrenList = document.getElementById("profileChildrenList");
