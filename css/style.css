@@ -573,3 +573,14 @@ button[type="button"] {
   height: 54px;
   object-fit: contain;
 }
+
+.profile-link:has(img)::before {
+  content: none;
+}
+
+.header-avatar {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 50%;
+}

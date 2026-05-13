@@ -1,8 +1,8 @@
 async function init() {
-  await loadChildren(); // Erst Kinder laden und Buttons erstellen
-  refreshStock();       // Dann Bestand für das (nun aktive) Kind holen
+  await loadChildren();
+  refreshStock();
+  loadUserAvatar();
 }
-
 
 const showFormButton = document.getElementById("showAddChildForm");
 const addChildForm = document.getElementById("addChildForm");
@@ -162,6 +162,22 @@ async function refreshStock() {
   } catch (error) {
     console.error("Fehler beim Abrufen der Bestandsdaten", error);
   }
+}
+
+async function loadUserAvatar() {
+  const response = await fetch("api/user.php", {
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (result.status !== "success") return;
+
+  const avatar = result.user.avatar || "avatar-1.png";
+
+  document.querySelectorAll(".user-avatar").forEach((image) => {
+    image.src = `img/profile/${avatar}`;
+  });
 }
 
 async function loadDiaperChart(sensorId = 1) {

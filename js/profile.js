@@ -75,17 +75,13 @@ updateAvatarImages(selectedAvatar);
 userForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const response = await fetch("api/user.php", {
-    method: "PUT",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: usernameInput.value.trim(),
-      email: emailInput.value.trim(),
-      password: passwordInput.value.trim(),
-      avatar: selectedAvatar,
-    }),
-  });
+  const result = await saveUserData();
+
+  if (result.status === "success") {
+    passwordInput.value = "";
+    loadUserData();
+  }
+});
 
   const result = await response.json();
 
