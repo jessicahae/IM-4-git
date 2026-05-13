@@ -11,24 +11,19 @@
 
 
 body {
-
   margin: 0;
   min-height: 100vh;
-
   font-family: "Patrick Hand", "comic sans ms", cursive;
   font-weight: 400;
   font-style: normal;
 
   background-color: #fffdf7;
-
   background-image:
-    /* horizontale Linien */
     repeating-linear-gradient(to bottom,
       transparent,
       transparent 31px,
       rgba(120, 160, 220, 0.35) 32px),
 
-    /* eine einzige rote Linie links */
     linear-gradient(to right,
       rgba(220, 80, 80, 0.5) 2px,
       transparent 2px);
@@ -77,40 +72,32 @@ p {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* Zentriert alles */
 }
 
 form {
   width: 70%;
-  /* max-width: 320px; */
   flex-direction: column;
 }
 
-/* Der dicke, eckige Rahmen für die Eingabefelder */
 input[type="text"],
 input[type="email"],
 input[type="password"] {
   width: 100%;
   box-sizing: border-box;
-  /* Verhindert, dass Padding das Feld breiter macht */
   padding: 7px 8px;
   font-family: inherit;
   font-size: 0.9rem;
   background-color: #ffffff;
   border: 2px solid #000000;
-  /* Dicke schwarze Linie */
 }
 
 input::placeholder {
   color: #666;
-  /* Etwas grauer für den Platzhalter-Text */
 }
 
 input:focus {
   border-color: #ffb8d1;
-  /* Die gleiche rosa Farbe wie der Button */
   outline: none;
-  /* Verhindert, dass der orange Standard-Browser-Rahmen trotzdem kommt */
 }
 
 button {
@@ -120,26 +107,20 @@ button {
   padding: 7px 8px;
   margin-top: 5px;
   border: 2px solid #000000;
-  /* Dicke schwarze Linie */
   cursor: pointer;
   text-transform: uppercase;
-  /* Text in Großbuchstaben */
   transition: 0.5s ease;
   color: #000000;
 }
 
 button:hover {
-  /* Erzeugt die dicke Kante unten (4px) und rechts (4px) */
   box-shadow: 3px 3px 0px #000000;
 }
 
-/* Primärer Button (Rosa, wie im Entwurf) */
 button[type="submit"] {
   background-color: #FFB3D9;
-  /* Das Rosa aus dem Bild */
 }
 
-/* Sekundärer Button (Weiß, "Zurück zum Login" / "Registrieren") */
 button[type="button"] {
   background-color: #ffffff;
 }
@@ -303,9 +284,6 @@ button[type="button"] {
   padding: 14px;
   border: 2px solid var(--ink);
   text-align: center;
-}
-
-.stock-status {
   font-size: 1.35rem;
   text-transform: uppercase;
 }
@@ -347,6 +325,13 @@ button[type="button"] {
   max-width: 560px;
   margin: 0 auto;
   padding-bottom: 24px;
+}
+
+.profile-link {
+  display: grid;
+  place-items: center;
+  color: inherit;
+  text-decoration: none;
 }
 
 .profile-page>h2 {
@@ -519,20 +504,19 @@ button[type="button"] {
 }
 
 .header-avatar {
-    width: 44px;          /* Passt perfekt in deine 48px Header-Spalte */
+    width: 44px;          
     height: 44px;
-    border-radius: 50%;   /* Macht es kreisrund */
-    border: 1.5px solid var(--ink); /* Der dicke schwarze Rand aus deinem Design */
+    border-radius: 50%;   
+    border: 1.5px solid var(--ink); 
     object-fit: cover;
     background-color: var(--paper);
 }
 
-/* 2. Styling für das Avatar neben der "KINDER" Überschrift */
 .section-avatar-icon {
-    width: 36px;          /* Ungefähr so groß wie das alte Baby-Gesicht */
+    width: 36px;          
     height: 36px;
-    border-radius: 50%;   /* Auch hier schön rund */
-    border: 1.5px solid var(--ink); /* Passender Rand */
+    border-radius: 50%;   
+    border: 1.5px solid var(--ink); 
     object-fit: cover;
     background-color: var(--paper);
 }
