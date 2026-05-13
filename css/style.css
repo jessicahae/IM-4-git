@@ -228,11 +228,16 @@ button[type="button"] {
   display: flex;
   align-items: center;
   margin-bottom: 18px;
+  gap: 7px;
 }
 
-.section-title img {
-  width: 50px;
+.logo_small {
+  width: 65px;
   object-fit: contain;
+}
+
+.icon{
+  width: 30px;
 }
 
 .children-section h3 {
@@ -574,13 +579,3 @@ button[type="button"] {
   object-fit: contain;
 }
 
-.profile-link:has(img)::before {
-  content: none;
-}
-
-.header-avatar {
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-  border-radius: 50%;
-}

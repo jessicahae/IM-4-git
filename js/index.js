@@ -53,7 +53,7 @@ async function loadChildren() {
 
     loadDiaperStatus(firstChild.sensor_number);
     if (statusTimer) clearInterval(statusTimer);
-statusTimer = setInterval(() => loadDiaperStatus(sensorNumber), 30000);
+statusTimer = setInterval(() => loadDiaperStatus(firstChild.sensor_number), 30000);
     }
   } catch (error) {
     console.error("Kinder konnten nicht geladen werden:", error);
@@ -85,23 +85,16 @@ addChildForm.addEventListener("submit", async (e) => {
       body: JSON.stringify({ name: nameVal, id_sensor: sensorVal })
     });
 
-    if ((await res.json()).status === "success") {
-      document.querySelectorAll(".child-button").forEach(b => b.classList.remove("active"));
+const result = await res.json();
 
-      const btn = createChildButton(
-        { name: nameVal, id_sensor: sensorVal },
-        true
-      );
+if (result.status === "success") {
+  addChildForm.reset();
+  addChildForm.hidden = true;
+  loadChildren();
+} else {
+  alert(result.message || "Kind konnte nicht gespeichert werden.");
+}
 
-      childrenSwitcher.insertBefore(btn, showFormButton);
-
-      document.querySelectorAll(".childNameDisplay").forEach(span => {
-        span.textContent = nameVal;
-      });
-
-      addChildForm.reset();
-      addChildForm.hidden = true;
-    }
   } catch {
     alert("Netzwerkfehler beim Speichern.");
   }
@@ -125,13 +118,15 @@ loadDiaperChart(sensorNumber);
 loadDiaperStatus(sensorNumber);
 
     if (statusTimer) clearInterval(statusTimer);
-    statusTimer = setInterval(() => loadDiaperStatus(sensorId), 30000);
+statusTimer = setInterval(() => loadDiaperStatus(sensorNumber), 30000);
   }
 });
 
 async function refreshStock() {
   try {
-    const response = await fetch("api/get_stock.php?sensor_number=1");
+    const response = await fetch("api/get_stock.php", {
+  credentials: "include",
+});
     const data = await response.json();
 
     if (data.status !== "success") return;

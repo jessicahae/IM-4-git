@@ -13,6 +13,20 @@ if (!isset($_SESSION['id_users'])) {
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
+    $userId = $_SESSION['id_users'];
+
+    $userStmt = $pdo->prepare("
+        SELECT stock_sensor_number
+        FROM users
+        WHERE id = :id
+    ");
+
+    $userStmt->execute([
+        ':id' => $userId
+    ]);
+
+    $connectedSensorNumber = $userStmt->fetchColumn();
+
     $stmt = $pdo->prepare("
         SELECT id, number, type
         FROM sensors
@@ -21,16 +35,23 @@ if ($method === 'GET') {
     ");
 
     $stmt->execute();
+    $sensors = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($sensors as &$sensor) {
+        $sensor['connected'] = ((int)$sensor['number'] === (int)$connectedSensorNumber);
+    }
 
     echo json_encode([
         'status' => 'success',
-        'sensors' => $stmt->fetchAll(PDO::FETCH_ASSOC)
+        'sensors' => $sensors,
+        'connected_sensor_number' => $connectedSensorNumber
     ]);
     exit;
 }
 
-if ($method === 'POST') {
+if ($method === 'PUT') {
     $data = json_decode(file_get_contents('php://input'), true);
+
     $number = trim($data['number'] ?? '');
 
     if ($number === '') {
@@ -39,66 +60,32 @@ if ($method === 'POST') {
         exit;
     }
 
-    $stmt = $pdo->prepare("
-        INSERT INTO sensors (number, type)
-        VALUES (:number, 'stock')
+    $checkStmt = $pdo->prepare("
+        SELECT COUNT(*)
+        FROM sensors
+        WHERE number = :number AND type = 'stock'
     ");
 
-    $stmt->execute([':number' => $number]);
-
-    echo json_encode([
-        'status' => 'success',
-        'sensor' => [
-            'id' => $pdo->lastInsertId(),
-            'number' => $number,
-            'type' => 'stock'
-        ]
-    ]);
-    exit;
-}
-
-if ($method === 'PUT') {
-    $data = json_decode(file_get_contents('php://input'), true);
-
-    $id = $data['id'] ?? '';
-    $number = trim($data['number'] ?? '');
-
-    if ($id === '' || $number === '') {
-        http_response_code(400);
-        echo json_encode(['status' => 'error', 'message' => 'Sensor-ID und Nummer sind erforderlich']);
-        exit;
-    }
-
-    $stmt = $pdo->prepare("
-        UPDATE sensors
-        SET number = :number
-        WHERE id = :id AND type = 'stock'
-    ");
-
-    $stmt->execute([
-        ':id' => $id,
+    $checkStmt->execute([
         ':number' => $number
     ]);
 
-    echo json_encode(['status' => 'success']);
-    exit;
-}
-
-if ($method === 'DELETE') {
-    $id = $_GET['id'] ?? '';
-
-    if ($id === '') {
+    if ((int)$checkStmt->fetchColumn() === 0) {
         http_response_code(400);
-        echo json_encode(['status' => 'error', 'message' => 'Sensor-ID fehlt']);
+        echo json_encode(['status' => 'error', 'message' => 'Dieser Vorratssensor existiert nicht']);
         exit;
     }
 
     $stmt = $pdo->prepare("
-        DELETE FROM sensors
-        WHERE id = :id AND type = 'stock'
+        UPDATE users
+        SET stock_sensor_number = :number
+        WHERE id = :id_users
     ");
 
-    $stmt->execute([':id' => $id]);
+    $stmt->execute([
+        ':number' => $number,
+        ':id_users' => $_SESSION['id_users']
+    ]);
 
     echo json_encode(['status' => 'success']);
     exit;
