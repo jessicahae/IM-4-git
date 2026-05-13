@@ -12,18 +12,28 @@ if ($sensorId === 0) {
 
 try {
     // 1. BESTAND für den AKTIVEN Sensor
-    $stmtStock = $pdo->prepare("SELECT amount FROM stock WHERE sensors_number = ? ORDER BY id DESC LIMIT 1");
+    $stmtStock = $pdo->prepare("
+    SELECT amount
+    FROM stock
+    WHERE sensors_number = ?
+    ORDER BY time DESC, id DESC
+    LIMIT 1
+");
+
     $stmtStock->execute([$sensorId]);
     $stockRow = $stmtStock->fetch(PDO::FETCH_ASSOC);
     $aktuellerBestand = $stockRow ? intval($stockRow['amount']) : 0;
 
     // 2. DURCHSCHNITT für den AKTIVEN Sensor
-    $stmtAvg = $pdo->prepare("SELECT AVG(daily_usage) as schnitt FROM (
-                                SELECT COUNT(*) as daily_usage 
-                                FROM stock 
-                                WHERE sensors_number = ? 
-                                GROUP BY DATE(time)
-                            ) as totals");
+$stmtAvg = $pdo->prepare("
+    SELECT AVG(daily_usage) AS schnitt
+    FROM (
+        SELECT GREATEST(MAX(amount) - MIN(amount), 0) AS daily_usage
+        FROM stock
+        WHERE sensors_number = ?
+        GROUP BY DATE(time)
+    ) AS daily_totals
+");
     $stmtAvg->execute([$sensorId]);
     $avgRow = $stmtAvg->fetch(PDO::FETCH_ASSOC);
     $durchschnitt = ($avgRow && $avgRow['schnitt'] > 0) ? floatval($avgRow['schnitt']) : 8.0;
