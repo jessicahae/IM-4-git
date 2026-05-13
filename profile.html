@@ -7,8 +7,8 @@
   <title>Profil</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -19,7 +19,7 @@
   </header>
 
   <main class="profile-page">
-    <h2>Profil</h2>
+    <h2>Profil von <span id="profileTitleName"></span></h2>
 
     <section class="profile-avatar-section">
       <div class="profile-avatar">☺</div>
@@ -32,7 +32,7 @@
         <h3>Kinder</h3>
       </div>
 
-<div id="profileChildrenList"></div>
+      <div id="profileChildrenList"></div>
 
       <p class="profile-help-text">Kinder hinzufügen: Dashboard → Kinder → Hinzufügen</p>
     </section>
@@ -43,19 +43,19 @@
         <h3>Vorrat-Sensor</h3>
       </div>
 
-<div id="stockSensorList"></div>
+      <div id="stockSensorList"></div>
 
-<form class="add-stock-sensor-form" id="addStockSensorForm" hidden>
-  <input type="text" id="stockSensorNumber" placeholder="Sensor-Nummer" required />
-  <div class="form-actions">
-    <button type="submit">Speichern</button>
-    <button type="button" id="cancelStockSensor">Abbrechen</button>
-  </div>
-</form>
+      <form class="add-stock-sensor-form" id="addStockSensorForm" hidden>
+        <input type="text" id="stockSensorNumber" placeholder="Sensor-Nummer" required />
+        <div class="form-actions">
+          <button type="submit">Speichern</button>
+          <button type="button" id="cancelStockSensor">Abbrechen</button>
+        </div>
+      </form>
 
-<button type="button" class="profile-primary-button" id="showStockSensorForm">
-  + Vorrat-Sensor hinzufügen
-</button>
+      <button type="button" class="profile-primary-button" id="showStockSensorForm">
+        + Vorrat-Sensor hinzufügen
+      </button>
     </section>
 
     <section class="profile-section">
@@ -64,7 +64,7 @@
         <h3>Benutzerdaten</h3>
       </div>
 
-      <form class="profile-form">
+      <form class="profile-form" id="userForm">
         <label for="username">Benutzername</label>
         <input type="text" id="username" value="Max Mustermann" />
 
@@ -74,7 +74,7 @@
         <label for="profilePassword">Passwort</label>
         <input type="password" id="profilePassword" value="12345678" />
 
-        <button type="button" class="profile-primary-button">Speichern</button>
+        <button type="submit" class="profile-primary-button">Speichern</button>
       </form>
     </section>
 

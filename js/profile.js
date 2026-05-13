@@ -1,3 +1,50 @@
+const userForm = document.getElementById("userForm");
+const profileTitleName = document.getElementById("profileTitleName");
+const usernameInput = document.getElementById("username");
+const emailInput = document.getElementById("profileEmail");
+const passwordInput = document.getElementById("profilePassword");
+
+async function loadUserData() {
+  const response = await fetch("api/user.php", {
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (result.status !== "success") return;
+
+  usernameInput.value = result.user.name;
+  emailInput.value = result.user.email;
+  passwordInput.value = "";
+
+  profileTitleName.textContent = result.user.name;
+}
+
+userForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const response = await fetch("api/user.php", {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: usernameInput.value.trim(),
+      email: emailInput.value.trim(),
+      password: passwordInput.value.trim(),
+    }),
+  });
+
+  const result = await response.json();
+
+  if (result.status === "success") {
+    passwordInput.value = "";
+    loadUserData();
+  } else {
+    alert(result.message || "Benutzerdaten konnten nicht gespeichert werden.");
+  }
+});
+
+
 const profileChildrenList = document.getElementById("profileChildrenList");
 
 async function loadProfileChildren() {
@@ -205,3 +252,4 @@ async function deleteStockSensor(id) {
 
 loadProfileChildren();
 loadStockSensors();
+loadUserData();
