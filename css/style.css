@@ -520,3 +520,50 @@ button[type="button"] {
     object-fit: cover;
     background-color: var(--paper);
 }
+
+@media (min-width: 700px) {
+  .dashboard,
+  .profile-page,
+  .bottom-nav {
+    max-width: 640px;
+  }
+
+  .dashboard-section,
+  .profile-section,
+  .profile-avatar-section {
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+
+  .app-header {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .children-switcher {
+    grid-template-columns: repeat(3, max-content);
+  }
+
+  .add-child-button,
+  .child-button {
+    min-width: 120px;
+  }
+
+  .stock-grid,
+  .statistics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .status-options {
+    gap: 18px;
+  }
+
+  .chart-wrapper {
+    height: 340px;
+  }
+
+  .bottom-nav {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+}
