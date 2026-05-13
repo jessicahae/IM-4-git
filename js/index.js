@@ -154,6 +154,10 @@ async function refreshStock() {
   }
 }
 
+init(); 
+setInterval(refreshStock, 30000); // Alle 30 Sek. im Hintergrund prüfen
+
+
 async function loadDiaperChart(sensorId = 1) {
   const response = await fetch(`api/diaper_chart.php?sensor=${sensorId}`, {
     credentials: "include",
