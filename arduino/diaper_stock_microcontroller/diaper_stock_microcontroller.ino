@@ -3,12 +3,12 @@
  * Feuchtigkeitssensor + MQ-135 + HX711 Waage + kleine LED + LED-Ring + WLAN/DB
  *
  * Pinbelegung:
+ * GPIO2 = WS2812B LED-Ring
  * GPIO3 = kleine LED für Waagen-Referenz
  * GPIO4 = Gas-Sensor MQ-135
  * GPIO5 = Feuchtigkeitssensor
  * GPIO6 = HX711 DT
  * GPIO7 = HX711 SCK
- * GPIO2 = WS2812B LED-Ring
  *
  * Datenbank-Endpunkte:
  *
@@ -33,11 +33,16 @@
  * - Gas zusätzlich bestätigt: type = "voll" wird direkt gesendet
  * - Wieder trocken bestätigt: type = "trocken" wird gesendet
  *
+ * LED bei Waage:
+ * - Am Anfang aus = Waage ist im Tare-Modus (Waage muss leer sein)
+ * - Led geht an = 1 Windel auf Waage legen, um Gewicht von 1 Windel zu ermitteln
+ * - Nach 10 Sekunden: Led geht aus = Alle Windeln des Vorrats könne raufgelegt werden und der Windel-Vorrat wird automatisch berechnet und aktualisiert
+ *
  * LED-Ring:
- * - Während Gas-Kalibrierung: blau, leicht bewegt
+ * - Während Gas-Kalibrierung: blau
  * - Status "nichts": grün
- * - Status "nass"/"klein": gelb
- * - Status "voll"/"gross": rot
+ * - Status "nass": gelb
+ * - Status "voll": rot
  ************************************************************************/
 
 #include <WiFi.h>
@@ -50,45 +55,48 @@
 // WLAN / Server
 // --------------------------------------------------
 
-const char* ssid = "tinkergarden";
-const char* pass = "strenggeheim";
+const char* ssid = "tinkergarden"; // Name des WLAN-Netzwerks, mit dem sich der ESP32 verbinden soll
+const char* pass = "strenggeheim"; // Passwort des WLAN-Netzwerks
 
-const char* diaperURL = "https://im4-follevindl.jessicahaeseli.ch/api/load/diaper.php";
-const char* stockURL  = "https://im4-follevindl.jessicahaeseli.ch/api/load/stock.php";
+const char* diaperURL = "https://im4-follevindl.jessicahaeseli.ch/api/load/diaper.php"; // API-Endpunkt für Windel-Ereignisse wie "nass", "voll" oder "trocken"
+const char* stockURL  = "https://im4-follevindl.jessicahaeseli.ch/api/load/stock.php"; // API-Endpunkt für den aktuellen Windelbestand
 
+// Speichert, ob der ESP32 aktuell mit dem WLAN verbunden ist
 bool isWlanConnected = false;
+
 
 // --------------------------------------------------
 // Sensor-Nummern für Datenbank
 // --------------------------------------------------
 
-const int diaperSensorNumber = 67;
-const int stockSensorNumber = 69;
+const int diaperSensorNumber = 67; // Sensor-ID des Windelsensors in der Datenbank
+const int stockSensorNumber = 69; // Sensor-ID des Gewichtssensors / Bestandssensors in der Datenbank
 
 // --------------------------------------------------
 // Pins
 // --------------------------------------------------
 
+const int ledRingPin = 2;
 const int referenceLedPin = 3;
 const int gasPin = 4;
 const int moisturePin = 5;
 const int HX_DT = 6;
 const int HX_SCK = 7;
-const int ledRingPin = 2;
 
-// Onboard-LED für WLAN-Status
 const int wifiLedPin = LED_BUILTIN;
+
 
 // --------------------------------------------------
 // LED-Ring
 // --------------------------------------------------
 
 #define NUM_PIXELS 12
+
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_PIXELS, ledRingPin, NEO_GRB + NEO_KHZ800);
 
-const unsigned long ledRingInterval = 80;
-unsigned long lastLedRingUpdate = 0;
-int ledStep = 0;
+const unsigned long ledRingInterval = 80; // Zeitabstand zwischen zwei LED-Animationsschritten in Millisekunden
+unsigned long lastLedRingUpdate = 0; // Speichert den Zeitpunkt der letzten LED-Ring-Aktualisierung
+int ledStep = 0; // Zähler für die LED-Animation, damit die Farben leicht pulsieren / wandern
 
 // --------------------------------------------------
 // Waage
@@ -96,68 +104,62 @@ int ledStep = 0;
 
 HX711 scale;
 
-const long referenceDetectThreshold = 300;
-const long emptyThreshold = 150;
+const long referenceDetectThreshold = 300; // Mindest-Rohwert, ab dem ein aufgelegtes Referenzgewicht erkannt wird
+const long emptyThreshold = 150; // Werte unterhalb dieser Grenze gelten als Rauschen beziehungsweise als leere Waage
 
 const unsigned long referenceMeasureTime = 10000; // 10 Sekunden Referenzmessung
 const unsigned long stockCheckInterval = 2000;    // alle 2 Sekunden Bestand prüfen
 const unsigned long stockStableTime = 5000;       // 5 Sekunden stabil, bevor DB-Eintrag
 
-long wertProWindel = 0;
+long wertProWindel = 0; // Rohwert, der dem Gewicht von einer Windel entspricht
+bool referenceReady = false; // Gibt an, ob die Referenzmessung abgeschlossen und die Waage bereit ist
+bool waitingForReference = true; // Gibt an, ob das System aktuell auf das Auflegen der Referenzwindel wartet
 
-bool referenceReady = false;
-bool waitingForReference = true;
+int lastSentDiaperCount = -1; // Zuletzt erfolgreich an die Datenbank gesendeter Windelbestand
+int candidateDiaperCount = -1; // Möglicher neuer Windelbestand, der gerade auf Stabilität geprüft wird
 
-int lastSentDiaperCount = -1;
-int candidateDiaperCount = -1;
-unsigned long candidateSince = 0;
-
-unsigned long lastStockCheck = 0;
-unsigned long lastScalePrint = 0;
+unsigned long candidateSince = 0; // Zeitpunkt, seit dem der mögliche neue Bestand erkannt wurde
+unsigned long lastStockCheck = 0; // Zeitpunkt der letzten Bestandsprüfung
+unsigned long lastScalePrint = 0; // Zeitpunkt der letzten Waagen-Ausgabe im Serial Monitor
 
 // --------------------------------------------------
 // Sensor-Schwellenwerte
 // --------------------------------------------------
 
-const int moistureThreshold = 1800;
-const int gasChangeThreshold = 300;
+const int moistureThreshold = 1900; // Feuchtigkeitswert, unterhalb dessen die Windel als feucht gilt
+const int gasChangeThreshold = 300; // Mindeständerung des Gaswerts gegenüber der Baseline, damit Gas als erkannt gilt
 
 // --------------------------------------------------
 // Zeiten Sensorlogik
 // --------------------------------------------------
 
+// Dauer der Gas-Kalibrierung zur Ermittlung des Ausgangswerts
 const unsigned long calibrationTime = 60000;   // 60 Sekunden Gas-Kalibrierung
+
+// Dauer, über die Feuchtigkeit oder Gas stabil erkannt werden muss
 const unsigned long confirmTime = 3000;        // 3 Sekunden bestätigen
+
+// Dauer, über die Trockenheit stabil erkannt werden muss
 const unsigned long dryConfirmTime = 5000;     // 5 Sekunden trocken bestätigen
-const unsigned long statusInterval = 2000;     // bleibt drin, wird aber nicht mehr genutzt
 
 // --------------------------------------------------
 // Sensorwerte
 // --------------------------------------------------
 
-int gasValue = 0;
-int moistureValue = 0;
-int gasBaseline = 0;
+int gasValue = 0; // Aktueller Messwert des Gassensors
+int moistureValue = 0; // Aktueller Messwert des Feuchtigkeitssensors
+int gasBaseline = 0; // Kalibrierter Ausgangswert des Gassensors
 
 // --------------------------------------------------
 // Ereignisstatus
 // --------------------------------------------------
 
-bool eventActive = false;
-bool eventConfirmed = false;
-bool gasCalibrationActive = false;
+bool eventActive = false; // Gibt an, ob aktuell ein Windelereignis läuft
+bool eventConfirmed = false; // Gibt an, ob ein erkanntes Ereignis bereits bestätigt wurde
+bool gasCalibrationActive = false; // Gibt an, ob gerade die Gas-Kalibrierung läuft
 
-String currentStatus = "nichts";
-// mögliche Werte: "nichts", "klein", "gross"
-
-// Merkt, ob für das aktuelle Ereignis schon "voll" gesendet wurde
-bool fullEventAlreadySent = false;
-
-// --------------------------------------------------
-// Timer
-// --------------------------------------------------
-
-unsigned long lastStatusPrint = 0;
+String currentStatus = "nichts"; // Aktueller Windelstatus für Logik und LED-Ring. mögliche Werte: "nichts", "klein", "gross" 
+bool fullEventAlreadySent = false; // Merkt, ob für das aktuelle Ereignis schon "voll" gesendet wurde
 
 // --------------------------------------------------
 // Setup
@@ -180,11 +182,10 @@ void setup() {
   Serial.println("------------------------------");
 
   connectWiFi();
-
   setupScale();
-
   calibrateGasSensor();
 }
+
 
 // --------------------------------------------------
 // Loop
@@ -297,6 +298,46 @@ void loop() {
   delay(50);
 }
 
+
+// --------------------------------------------------
+// WLAN
+// --------------------------------------------------
+
+void connectWiFi() {
+  Serial.print("Verbinde mit WLAN: ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, pass);
+
+  int attempts = 0;
+
+  while (WiFi.status() != WL_CONNECTED && attempts < 40) {
+    delay(500);
+    Serial.print(".");
+    attempts++;
+  }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    isWlanConnected = true;
+
+    Serial.println();
+    Serial.println("WiFi verbunden.");
+    Serial.print("SSID: ");
+    Serial.println(ssid);
+    Serial.print("IP-Adresse: ");
+    Serial.println(WiFi.localIP());
+
+    setWifiLed(true);
+  } else {
+    isWlanConnected = false;
+
+    Serial.println();
+    Serial.println("WiFi Verbindung fehlgeschlagen.");
+
+    setWifiLed(false);
+  }
+}
+
 // --------------------------------------------------
 // Waage Setup
 // --------------------------------------------------
@@ -312,17 +353,6 @@ void setupScale() {
   scale.set_gain(128);
 
   delay(2000);
-
-  if (!scale.is_ready()) {
-    Serial.println("HX711 ist nicht bereit. Bitte Verkabelung pruefen.");
-
-    while (true) {
-      digitalWrite(referenceLedPin, HIGH);
-      delay(200);
-      digitalWrite(referenceLedPin, LOW);
-      delay(200);
-    }
-  }
 
   Serial.println("Setze Tare...");
   digitalWrite(referenceLedPin, LOW);
@@ -341,6 +371,51 @@ void setupScale() {
   candidateSince = 0;
 
   digitalWrite(referenceLedPin, HIGH);
+}
+
+
+// --------------------------------------------------
+// Gas-Kalibrierung
+// --------------------------------------------------
+
+void calibrateGasSensor() {
+  Serial.println("------------------------------");
+  Serial.println("Gas-Kalibrierung startet.");
+  Serial.println("LED-Ring ist blau: System noch nicht ready.");
+  Serial.println("------------------------------");
+
+  currentStatus = "nichts";
+  gasCalibrationActive = true;
+
+  unsigned long startTime = millis();
+  unsigned long sampleCount = 0;
+  long gasSum = 0;
+
+  while (millis() - startTime < calibrationTime) {
+    int currentGasValue = analogRead(gasPin);
+    gasSum += currentGasValue;
+    sampleCount++;
+
+    updateLedRing();
+    updateScaleLogic();
+
+    delay(100);
+  }
+
+  if (sampleCount > 0) {
+    gasBaseline = gasSum / sampleCount;
+  }
+
+  gasCalibrationActive = false;
+
+  Serial.println("------------------------------");
+  Serial.println("Gas-Kalibrierung abgeschlossen.");
+  Serial.print("Neue Gas-Baseline: ");
+  Serial.println(gasBaseline);
+  Serial.println("System ready.");
+  Serial.println("------------------------------");
+
+  lastStatusPrint = millis();
 }
 
 // --------------------------------------------------
@@ -444,7 +519,7 @@ long measureReferenceValue() {
   digitalWrite(referenceLedPin, HIGH);
 
   while (millis() - startTime < referenceMeasureTime) {
-    updateLedRing();
+    updateLedRing(); //Damit LED-Ring auch während Waage-Logik weiteranimiert bleibt
 
     if (scale.is_ready()) {
       long rawValue = scale.get_value(1);
@@ -529,49 +604,6 @@ void checkAndSendDiaperStockStable() {
   }
 }
 
-// --------------------------------------------------
-// Gas-Kalibrierung
-// --------------------------------------------------
-
-void calibrateGasSensor() {
-  Serial.println("------------------------------");
-  Serial.println("Gas-Kalibrierung startet.");
-  Serial.println("LED-Ring ist blau: System noch nicht ready.");
-  Serial.println("------------------------------");
-
-  currentStatus = "nichts";
-  gasCalibrationActive = true;
-
-  unsigned long startTime = millis();
-  unsigned long sampleCount = 0;
-  long gasSum = 0;
-
-  while (millis() - startTime < calibrationTime) {
-    int currentGasValue = analogRead(gasPin);
-    gasSum += currentGasValue;
-    sampleCount++;
-
-    updateLedRing();
-    updateScaleLogic();
-
-    delay(100);
-  }
-
-  if (sampleCount > 0) {
-    gasBaseline = gasSum / sampleCount;
-  }
-
-  gasCalibrationActive = false;
-
-  Serial.println("------------------------------");
-  Serial.println("Gas-Kalibrierung abgeschlossen.");
-  Serial.print("Neue Gas-Baseline: ");
-  Serial.println(gasBaseline);
-  Serial.println("System ready.");
-  Serial.println("------------------------------");
-
-  lastStatusPrint = millis();
-}
 
 // --------------------------------------------------
 // Feuchtigkeit bestätigen
@@ -739,45 +771,6 @@ void sendStockToDatabase(int amountValue) {
   http.end();
 }
 
-// --------------------------------------------------
-// WLAN
-// --------------------------------------------------
-
-void connectWiFi() {
-  Serial.print("Verbinde mit WLAN: ");
-  Serial.println(ssid);
-
-  WiFi.begin(ssid, pass);
-
-  int attempts = 0;
-
-  while (WiFi.status() != WL_CONNECTED && attempts < 40) {
-    delay(500);
-    Serial.print(".");
-    attempts++;
-  }
-
-  if (WiFi.status() == WL_CONNECTED) {
-    isWlanConnected = true;
-
-    Serial.println();
-    Serial.println("WiFi verbunden.");
-    Serial.print("SSID: ");
-    Serial.println(ssid);
-    Serial.print("IP-Adresse: ");
-    Serial.println(WiFi.localIP());
-
-    setWifiLed(true);
-  } else {
-    isWlanConnected = false;
-
-    Serial.println();
-    Serial.println("WiFi Verbindung fehlgeschlagen.");
-
-    setWifiLed(false);
-  }
-}
-
 bool is_wlan_connected() {
   if (WiFi.status() != WL_CONNECTED) {
     if (isWlanConnected == true) {
@@ -799,26 +792,11 @@ bool is_wlan_connected() {
 }
 
 void setWifiLed(bool connected) {
-  if (wifiLedPin == ledRingPin) {
-    Serial.println("Hinweis: LED_BUILTIN liegt offenbar auf dem gleichen Pin wie der LED-Ring.");
-    Serial.println("Die WLAN-LED wird deshalb nicht separat gesetzt.");
-    return;
-  }
-
   if (connected) {
     rgbLedWrite(wifiLedPin, 0, 80, 0); // grün
   } else {
     rgbLedWrite(wifiLedPin, 80, 0, 0); // rot
   }
-}
-
-// --------------------------------------------------
-// Status-Print
-// --------------------------------------------------
-
-void printStatusEveryTwoSeconds() {
-  // Diese Funktion bleibt drin, wird aber im loop() nicht mehr aufgerufen.
-  // So kann sie bei Bedarf später wieder aktiviert werden.
 }
 
 // --------------------------------------------------
