@@ -134,52 +134,6 @@ async function refreshStock() {
   }
 }
 
-
-// async function refreshStock() {
-//   // 1. Den aktuell aktiven Kind-Button finden
-//   const activeChildButton = document.querySelector(".child-button.active");
-  
-//   // Wenn kein Kind aktiv ist, können wir nichts laden
-//   if (!activeChildButton) return;
-
-//   const sensorId = activeChildButton.dataset.sensorId;
-
-//   try {
-//     // 2. Die Sensor-ID als Parameter an PHP schicken
-//     const response = await fetch(`api/get_stock.php?sensor_id=${sensorId}`);
-//     const data = await response.json();
-
-//     if (data.status === "success") {
-//       const bestand = data.bestand; 
-//       const verbrauch = data.durchschnitt;
-//       const tage = verbrauch > 0 ? Math.floor(bestand / verbrauch) : 0;
-
-//       document.getElementById("display-bestand").textContent = bestand + " Windeln";
-//       document.getElementById("display-verbrauch").textContent = verbrauch;
-//       document.getElementById("display-reichweite").textContent = tage + " Tage";
-
-//       const section = document.querySelector(".stock-section");
-//       const statusText = document.querySelector(".stock-status");
-
-//       if (tage <= 3) {
-//         section.style.backgroundColor = "#ff66b2";
-//         section.style.color = "white";
-//         statusText.textContent = "Status: Windeln nachkaufen!";
-//       } else {
-//         section.style.backgroundColor = ""; 
-//         section.style.color = "";
-//         statusText.textContent = "Status: Vorrat okay";
-//       }
-//     }
-//   } catch (e) {
-//     console.error("Fehler beim Abrufen der Bestandsdaten", e);
-//   }
-// }
-
-init(); 
-setInterval(refreshStock, 30000); // Alle 30 Sek. im Hintergrund prüfen
-
-
 async function loadDiaperChart(sensorId = 1) {
   const response = await fetch(`api/diaper_chart.php?sensor=${sensorId}`, {
     credentials: "include",
@@ -243,6 +197,19 @@ async function loadDiaperChart(sensorId = 1) {
       },
     },
   });
+}
+
+async function loadDiaperStats(sensorId) {
+  const response = await fetch(`api/diaper_stats.php?sensor=${sensorId}`, {
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (result.status !== "success") return;
+
+  document.getElementById("diapersToday").textContent = `${result.today} Windeln`;
+  document.getElementById("diapersWeek").textContent = `${result.week} Windeln`;
 }
 
 init();
