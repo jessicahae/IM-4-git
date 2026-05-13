@@ -3,6 +3,11 @@ const profileTitleName = document.getElementById("profileTitleName");
 const usernameInput = document.getElementById("username");
 const emailInput = document.getElementById("profileEmail");
 const passwordInput = document.getElementById("profilePassword");
+const profileAvatar = document.getElementById("profileAvatar");
+const showAvatarOptions = document.getElementById("showAvatarOptions");
+const avatarOptions = document.getElementById("avatarOptions");
+
+let selectedAvatar = "avatar-1.png";
 
 async function loadUserData() {
   const response = await fetch("api/user.php", {
@@ -18,6 +23,10 @@ async function loadUserData() {
   passwordInput.value = "";
 
   profileTitleName.textContent = result.user.name;
+
+  selectedAvatar = result.user.avatar || "avatar-1.png";
+profileAvatar.src = `img/${selectedAvatar}`;
+
 }
 
 userForm.addEventListener("submit", async (event) => {
