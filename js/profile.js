@@ -9,6 +9,20 @@ const avatarOptions = document.getElementById("avatarOptions");
 
 let selectedAvatar = "avatar-1.png";
 
+showAvatarOptions.addEventListener("click", () => {
+  avatarOptions.hidden = !avatarOptions.hidden;
+});
+
+avatarOptions.addEventListener("click", (event) => {
+  const button = event.target.closest("button");
+  if (!button) return;
+
+  selectedAvatar = button.dataset.avatar;
+  profileAvatar.src = `img/profile/${selectedAvatar}`;
+  avatarOptions.hidden = true;
+});
+
+
 async function loadUserData() {
   const response = await fetch("api/user.php", {
     credentials: "include",
@@ -25,7 +39,7 @@ async function loadUserData() {
   profileTitleName.textContent = result.user.name;
 
   selectedAvatar = result.user.avatar || "avatar-1.png";
-profileAvatar.src = `img/${selectedAvatar}`;
+profileAvatar.src = `img/profile/${selectedAvatar}`;
 
 }
 
@@ -40,6 +54,7 @@ userForm.addEventListener("submit", async (event) => {
       name: usernameInput.value.trim(),
       email: emailInput.value.trim(),
       password: passwordInput.value.trim(),
+      avatar: selectedAvatar,
     }),
   });
 

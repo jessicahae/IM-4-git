@@ -57,7 +57,7 @@ if ($method === 'PUT') {
             ':name' => $name,
             ':email' => $email,
             ':password' => $hashedPassword,
-            ':id' => $userId
+            ':id' => $userId, 
             ':avatar' => $avatar
         ]);
     } else {
@@ -70,7 +70,7 @@ if ($method === 'PUT') {
         $stmt->execute([
             ':name' => $name,
             ':email' => $email,
-            ':id' => $userId
+            ':id' => $userId,
             ':avatar' => $avatar
         ]);
     }
