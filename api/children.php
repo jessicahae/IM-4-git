@@ -89,16 +89,31 @@ if ($method === 'PUT') {
         exit;
     }
 
-    $stmt = $pdo->prepare("
-        UPDATE children
-        SET id_sensor = :id_sensor
-        WHERE id = :id AND id_users = :id_users
-    ");
+$sensorStmt = $pdo->prepare("
+    SELECT id
+    FROM sensors
+    WHERE number = :number
+      AND type = 'diaper'
+    LIMIT 1
+");
+
+$sensorStmt->execute([
+    ':number' => $idSensor
+]);
+
+$sensorId = $sensorStmt->fetchColumn();
+
+if (!$sensorId) {
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'message' => 'Dieser Windel-Sensor existiert nicht']);
+    exit;
+}
+
 
     $stmt->execute([
-        ':id_sensor' => $idSensor,
-        ':id' => $childId,
-        ':id_users' => $userId
+    ':id_sensor' => $sensorId,
+    ':id' => $childId,
+    ':id_users' => $userId
     ]);
 
     echo json_encode(['status' => 'success']);

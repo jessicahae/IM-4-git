@@ -109,7 +109,7 @@ function createChildPanel(child) {
     <h4>${child.name}</h4>
 
     <div class="profile-row">
-      <input type="text" value="${child.id_sensor}" class="sensor-input" />
+<input type="text" value="${child.sensor_number || ""}" class="sensor-input" />
       <button type="button" class="profile-action-button">Ändern</button>
     </div>
 
@@ -167,10 +167,6 @@ async function deleteChild(childId) {
 }
 
 const stockSensorList = document.getElementById("stockSensorList");
-const showStockSensorForm = document.getElementById("showStockSensorForm");
-const addStockSensorForm = document.getElementById("addStockSensorForm");
-const cancelStockSensor = document.getElementById("cancelStockSensor");
-const stockSensorNumber = document.getElementById("stockSensorNumber");
 
 async function loadStockSensors() {
   const response = await fetch("api/sensors.php", {
@@ -192,21 +188,18 @@ function createStockSensorPanel(sensor) {
   const panel = document.createElement("article");
   panel.className = "profile-panel";
 
-  const statusText = sensor.connected ? "Verbunden" : "Nicht verbunden";
-  const buttonText = sensor.connected ? "Verbunden" : "Verbinden";
-
   panel.innerHTML = `
     <div class="profile-panel-header">
       <div>
         <h4>Vorrat-Sensor ${sensor.number}</h4>
-        <span class="connection-status">${statusText}</span>
+        ${sensor.connected ? '<span class="connection-status">Verbunden</span>' : ''}
       </div>
     </div>
 
     <div class="profile-row">
       <div class="sensor-field">Sensor: ${sensor.number}</div>
       <button type="button" class="profile-action-button" ${sensor.connected ? "disabled" : ""}>
-        ${buttonText}
+        ${sensor.connected ? "Aktiv" : "Verbinden"}
       </button>
     </div>
   `;
@@ -219,40 +212,6 @@ function createStockSensorPanel(sensor) {
 
   return panel;
 }
-
-showStockSensorForm.addEventListener("click", () => {
-  addStockSensorForm.hidden = false;
-  stockSensorNumber.focus();
-});
-
-cancelStockSensor.addEventListener("click", () => {
-  addStockSensorForm.reset();
-  addStockSensorForm.hidden = true;
-});
-
-addStockSensorForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-
-  const number = stockSensorNumber.value.trim();
-  if (!number) return;
-
-  const response = await fetch("api/sensors.php", {
-    method: "POST",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ number }),
-  });
-
-  const result = await response.json();
-
-  if (result.status === "success") {
-    addStockSensorForm.reset();
-    addStockSensorForm.hidden = true;
-    loadStockSensors();
-  } else {
-    alert(result.message || "Vorrat-Sensor konnte nicht gespeichert werden.");
-  }
-});
 
 async function updateStockSensor(number) {
   const response = await fetch("api/sensors.php", {
@@ -268,21 +227,6 @@ async function updateStockSensor(number) {
     loadStockSensors();
   } else {
     alert(result.message || "Vorrat-Sensor konnte nicht geändert werden.");
-  }
-}
-
-async function deleteStockSensor(id) {
-  const response = await fetch(`api/sensors.php?id=${id}`, {
-    method: "DELETE",
-    credentials: "include",
-  });
-
-  const result = await response.json();
-
-  if (result.status === "success") {
-    loadStockSensors();
-  } else {
-    alert(result.message || "Vorrat-Sensor konnte nicht gelöscht werden.");
   }
 }
 
