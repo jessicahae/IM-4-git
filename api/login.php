@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Verify password
     if ($user && password_verify($password, $user['password'])) {
         session_regenerate_id(true);
-        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['id_users'] = $user['id'];
         $_SESSION['email']   = $email;
 
         echo json_encode(["status" => "success"]);

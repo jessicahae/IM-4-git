@@ -7,14 +7,17 @@
   <title>Dashboard</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 </head>
 
 <body>
   <header class="app-header">
-    <img src="img/logo.png" alt="Folle Vindl Logo" class="app-logo" />
-    <h1>Folle Vindl</h1>
+<a href="index.html" class="brand-link">
+  <img src="img/logo.png" alt="Folle Vindl Logo" class="app-logo" />
+  <h1>Folle Vindl</h1>
+</a>
+
     <a href="profile.html" class="profile-link">Profil</a>
   </header>
 
@@ -24,21 +27,31 @@
     <section class="dashboard-section children-section">
       <h3>Kinder</h3>
 
-      <div class="children-switcher">
-        <button class="add-child-button">+ Hinzufügen</button>
+      <div class="children-switcher" id="childrenSwitcher">
+        <button type="button" class="add-child-button" id="showAddChildForm">+ Hinzufügen</button>
       </div>
+
+      <form class="add-child-form" id="addChildForm" hidden>
+        <input type="text" id="childName" placeholder="Name des Kindes" required />
+        <input type="text" id="sensorId" placeholder="Sensor-ID" required />
+
+        <div class="form-actions">
+          <button type="submit">Speichern</button>
+          <button type="button" id="cancelAddChild">Abbrechen</button>
+        </div>
+      </form>
     </section>
 
     <section class="dashboard-section diaper-status-section status-dry">
       <div class="section-title">
         <img src="img/logo.png" alt="Windel" />
-        <h3>Windel-Status: Max</h3>
+        <h3>Windel-Status: <span class="childNameDisplay"></span></h3>
       </div>
 
       <div class="status-options">
-        <div class="status-button active">Trocken</div>
-        <div class="status-button">Nass</div>
-        <div class="status-button">Voll</div>
+        <div class="status-box" id="status-trocken">Trocken</div>
+        <div class="status-box" id="status-nass">Nass</div>
+        <div class="status-box" id="status-voll">Voll</div>
       </div>
 
     </section>
@@ -46,55 +59,52 @@
     <section class="dashboard-section stock-section">
       <div class="section-title">
         <span class="vorrat-icon"> <img src="img/icon_vorratbox.png" alt="Kartonbox"></span>
-        <h3>Vorrat (alle Kinder)</h3>
+        <h3>Vorrat</h3>
       </div>
 
       <div class="stock-grid">
         <article class="info-box">
           <p>Aktueller Bestand</p>
-          <strong>24 Windeln</strong>
+          <strong id="display-bestand">... lade</strong>
         </article>
 
         <article class="info-box">
           <p>Ø Verbrauch/Tag</p>
-          <strong>8.9</strong>
+          <strong id="display-verbrauch">...</strong>
         </article>
 
         <article class="info-box wide">
           <p>Reicht für</p>
-          <strong>2 Tage</strong>
+          <strong id="display-reichweite">...</strong>
         </article>
       </div>
 
-      <div class="stock-status">
-        Status: Bald nötig
-      </div>
 
-      <p class="sensor-note">Vorrat wird automatisch vom Sensor erfasst</p>
+      <div class="stock-status">Status: <span id="display-status"></span></div>
     </section>
 
     <section class="dashboard-section statistics-section">
       <div class="section-title">
         <span class="sketch-icon">↗</span>
-        <h3>Statistik: Max</h3>
+        <h3>Statistik:<span class="childNameDisplay"></span></h3>
       </div>
 
       <div class="statistics-grid">
         <article class="info-box">
           <p>Heute</p>
-          <strong>9 Windeln</strong>
+          <strong id="diapersToday">...</strong>
         </article>
 
         <article class="info-box">
           <p>Diese Woche</p>
-          <strong>62 Windeln</strong>
+          <strong id="diapersWeek">...</strong>
         </article>
       </div>
 
       <section class="chart-section">
-        <h3>Windeln pro Tag: Max</h3>
-        <div id="diaperChart">
-          <!-- Recharts kommt später hier rein -->
+        <h3>Windeln pro Tag: <span class="childNameDisplay"></span></h3>
+        <div class="chart-wrapper">
+          <canvas id="diaperChart"></canvas>
         </div>
       </section>
     </section>
@@ -105,7 +115,9 @@
     <a href="profile.html">Profil</a>
   </nav>
 
-  <script src="js/protected.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/index.js"></script>
 </body>
 
 

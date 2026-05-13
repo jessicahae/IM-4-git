@@ -7,23 +7,36 @@
   <title>Profil</title>
   <link rel="stylesheet" href="css/style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 </head>
 
 <body>
   <header class="app-header">
-    <img src="img/logo.png" alt="Folle Vindl Logo" class="app-logo" />
-    <h1>Folle Vindl</h1>
+    <a href="index.html" class="brand-link">
+      <img src="img/logo.png" alt="Folle Vindl Logo" class="app-logo" />
+      <h1>Folle Vindl</h1>
+    </a>
     <a href="profile.html" class="profile-link active">Profil</a>
   </header>
 
   <main class="profile-page">
-    <h2>Profil</h2>
+    <h2>Profil von <span id="profileTitleName"></span></h2>
 
     <section class="profile-avatar-section">
-      <div class="profile-avatar">☺</div>
-      <button type="button" class="profile-primary-button">Profilbild ändern</button>
+<img src="img/profile/avatar-1.png" alt="Profilbild" class="profile-avatar" id="profileAvatar" />
+
+<button type="button" class="profile-primary-button" id="showAvatarOptions">
+  Profilbild ändern
+</button>
+
+<div class="avatar-options" id="avatarOptions" hidden>
+  <button type="button" data-avatar="avatar-1.png"><img src="img/profile/avatar-1.png" alt="Avatar 1"></button>
+  <button type="button" data-avatar="avatar-2.png"><img src="img/profile/avatar-2.png" alt="Avatar 2"></button>
+  <button type="button" data-avatar="avatar-3.png"><img src="img/profile/avatar-3.png" alt="Avatar 3"></button>
+  <button type="button" data-avatar="avatar-4.png"><img src="img/profile/avatar-4.png" alt="Avatar 4"></button>
+</div>
+
     </section>
 
     <section class="profile-section">
@@ -32,15 +45,7 @@
         <h3>Kinder</h3>
       </div>
 
-      <article class="profile-panel">
-        <h4>Max</h4>
-        <p>Status: Trocken · Heute: 9 Windeln</p>
-
-        <div class="profile-row">
-          <div class="sensor-field">Sensor: SENSOR-001</div>
-          <button type="button" class="profile-action-button">Ändern</button>
-        </div>
-      </article>
+      <div id="profileChildrenList"></div>
 
       <p class="profile-help-text">Kinder hinzufügen: Dashboard → Kinder → Hinzufügen</p>
     </section>
@@ -51,22 +56,19 @@
         <h3>Vorrat-Sensor</h3>
       </div>
 
-      <article class="profile-panel">
-        <div class="profile-panel-header">
-          <div>
-            <h4>Vorrat-Sensor Kinderzimmer</h4>
-            <span class="connection-status">Verbunden</span>
-          </div>
-          <button type="button" class="delete-button">⌫</button>
-        </div>
+      <div id="stockSensorList"></div>
 
-        <div class="profile-row">
-          <div class="sensor-field">Sensor: VORRAT-001</div>
-          <button type="button" class="profile-action-button">Ändern</button>
+      <form class="add-stock-sensor-form" id="addStockSensorForm" hidden>
+        <input type="text" id="stockSensorNumber" placeholder="Sensor-Nummer" required />
+        <div class="form-actions">
+          <button type="submit">Speichern</button>
+          <button type="button" id="cancelStockSensor">Abbrechen</button>
         </div>
-      </article>
+      </form>
 
-      <button type="button" class="profile-primary-button">+ Vorrat-Sensor hinzufügen</button>
+      <button type="button" class="profile-primary-button" id="showStockSensorForm">
+        + Vorrat-Sensor hinzufügen
+      </button>
     </section>
 
     <section class="profile-section">
@@ -75,7 +77,7 @@
         <h3>Benutzerdaten</h3>
       </div>
 
-      <form class="profile-form">
+      <form class="profile-form" id="userForm">
         <label for="username">Benutzername</label>
         <input type="text" id="username" value="Max Mustermann" />
 
@@ -85,7 +87,7 @@
         <label for="profilePassword">Passwort</label>
         <input type="password" id="profilePassword" value="12345678" />
 
-        <button type="button" class="profile-primary-button">Bearbeiten</button>
+        <button type="submit" class="profile-primary-button">Speichern</button>
       </form>
     </section>
 
@@ -97,7 +99,8 @@
     <a href="profile.html" class="active">Profil</a>
   </nav>
 
-  <script src="js/protected.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/profile.js"></script>
   <script src="js/logout.js"></script>
 </body>
 
