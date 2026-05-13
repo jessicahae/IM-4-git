@@ -17,7 +17,7 @@ function createChildButton(child, isActive = false) {
   button.type = "button";
   button.className = isActive ? "child-button active" : "child-button";
   button.textContent = child.name;
-  button.dataset.sensorId = child.id_sensor;
+  button.dataset.sensorNumber = child.sensor_number;
 
   return button;
 }
@@ -116,14 +116,14 @@ document.getElementById("childrenSwitcher").addEventListener("click", (event) =>
     event.target.classList.add("active");
 
     const clickedName = event.target.textContent;
-    const sensorId = event.target.dataset.sensorId;
+    const sensorNumber = event.target.dataset.sensorNumber;
 
     document.querySelectorAll(".childNameDisplay").forEach(el => el.textContent = clickedName);
 
-    loadDiaperStats(sensorId);
-    loadDiaperChart(sensorId);
+loadDiaperStats(sensorNumber);
+loadDiaperChart(sensorNumber);
+loadDiaperStatus(sensorNumber);
 
-    loadDiaperStatus(sensorId);
     if (statusTimer) clearInterval(statusTimer);
     statusTimer = setInterval(() => loadDiaperStatus(sensorId), 30000);
   }
@@ -287,5 +287,3 @@ async function loadDiaperStatus(sensorId) {
     console.error("Fehler beim Laden des Windel-Status", error);
   }
 }
-
-

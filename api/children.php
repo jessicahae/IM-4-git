@@ -18,10 +18,15 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
     $stmt = $pdo->prepare("
-        SELECT id, name, id_sensor
+        SELECT 
+            children.id,
+            children.name,
+            children.id_sensor,
+            sensors.number AS sensor_number
         FROM children
-        WHERE id_users = :id_users
-        ORDER BY id ASC
+        LEFT JOIN sensors ON children.id_sensor = sensors.id
+        WHERE children.id_users = :id_users
+        ORDER BY children.id ASC
     ");
 
     $stmt->execute([

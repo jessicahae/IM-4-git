@@ -2,11 +2,11 @@
 require_once("../system/config.php");
 header('Content-Type: application/json');
 
-// Wir holen die Sensor-ID aus der Anfrage (z.B. get_stock.php?sensor_id=1)
-$sensorId = isset($_GET['sensor_id']) ? intval($_GET['sensor_id']) : 0;
+// Wir holen die Sensor-Nummer aus der Anfrage (z.B. get_stock.php?sensor_number=1)
+$sensorNumber = isset($_GET['sensor_number']) ? intval($_GET['sensor_number']) : 0;
 
-if ($sensorId === 0) {
-    echo json_encode(["status" => "error", "message" => "Keine Sensor-ID übergeben"]);
+if ($sensorNumber === 0) {
+    echo json_encode(["status" => "error", "message" => "Keine Sensor-Nummer übergeben"]);
     exit;
 }
 
@@ -15,12 +15,12 @@ try {
     $stmtStock = $pdo->prepare("
     SELECT amount
     FROM stock
-    WHERE sensors_number = ?
+    $stmtStock->execute([$sensorNumber]);
     ORDER BY time DESC, id DESC
     LIMIT 1
 ");
 
-    $stmtStock->execute([$sensorId]);
+    $stmtStock->execute([$sensorNumber]);
     $stockRow = $stmtStock->fetch(PDO::FETCH_ASSOC);
     $aktuellerBestand = $stockRow ? intval($stockRow['amount']) : 0;
 
@@ -34,7 +34,7 @@ $stmtAvg = $pdo->prepare("
         GROUP BY DATE(time)
     ) AS daily_totals
 ");
-    $stmtAvg->execute([$sensorId]);
+    $stmtAvg->execute([$sensorNumber]);
     $avgRow = $stmtAvg->fetch(PDO::FETCH_ASSOC);
     $durchschnitt = ($avgRow && $avgRow['schnitt'] > 0) ? floatval($avgRow['schnitt']) : 8.0;
 
