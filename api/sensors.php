@@ -49,35 +49,6 @@ if ($method === 'GET') {
     exit;
 }
 
-
-if ($method === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    $number = trim($data['number'] ?? '');
-
-    if ($number === '') {
-        http_response_code(400);
-        echo json_encode(['status' => 'error', 'message' => 'Sensor-Nummer fehlt']);
-        exit;
-    }
-
-    $stmt = $pdo->prepare("
-        INSERT INTO sensors (number, type)
-        VALUES (:number, 'stock')
-    ");
-
-    $stmt->execute([':number' => $number]);
-
-    echo json_encode([
-        'status' => 'success',
-        'sensor' => [
-            'id' => $pdo->lastInsertId(),
-            'number' => $number,
-            'type' => 'stock'
-        ]
-    ]);
-    exit;
-}
-
 if ($method === 'PUT') {
     $data = json_decode(file_get_contents('php://input'), true);
 
@@ -115,27 +86,6 @@ if ($method === 'PUT') {
         ':number' => $number,
         ':id_users' => $_SESSION['id_users']
     ]);
-
-    echo json_encode(['status' => 'success']);
-    exit;
-}
-
-
-if ($method === 'DELETE') {
-    $id = $_GET['id'] ?? '';
-
-    if ($id === '') {
-        http_response_code(400);
-        echo json_encode(['status' => 'error', 'message' => 'Sensor-ID fehlt']);
-        exit;
-    }
-
-    $stmt = $pdo->prepare("
-        DELETE FROM sensors
-        WHERE id = :id AND type = 'stock'
-    ");
-
-    $stmt->execute([':id' => $id]);
 
     echo json_encode(['status' => 'success']);
     exit;

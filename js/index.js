@@ -53,7 +53,7 @@ async function loadChildren() {
 
     loadDiaperStatus(firstChild.sensor_number);
     if (statusTimer) clearInterval(statusTimer);
-statusTimer = setInterval(() => loadDiaperStatus(sensorNumber), 30000);
+statusTimer = setInterval(() => loadDiaperStatus(firstChild.sensor_number), 30000);
     }
   } catch (error) {
     console.error("Kinder konnten nicht geladen werden:", error);
@@ -88,11 +88,10 @@ addChildForm.addEventListener("submit", async (e) => {
     if ((await res.json()).status === "success") {
       document.querySelectorAll(".child-button").forEach(b => b.classList.remove("active"));
 
-      const btn = createChildButton(
-        { name: nameVal, id_sensor: sensorVal },
-        true
-      );
-
+const btn = createChildButton(
+  { name: nameVal, sensor_number: sensorVal },
+  true
+);
       childrenSwitcher.insertBefore(btn, showFormButton);
 
       document.querySelectorAll(".childNameDisplay").forEach(span => {
@@ -125,7 +124,7 @@ loadDiaperChart(sensorNumber);
 loadDiaperStatus(sensorNumber);
 
     if (statusTimer) clearInterval(statusTimer);
-    statusTimer = setInterval(() => loadDiaperStatus(sensorId), 30000);
+statusTimer = setInterval(() => loadDiaperStatus(sensorNumber), 30000);
   }
 });
 
