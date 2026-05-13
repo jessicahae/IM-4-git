@@ -54,7 +54,7 @@ body {
   height: auto;
   width: 100px;
 }
-  
+
 h2 {
   font-size: 1.2em;
   margin: 0.5em 0;
@@ -119,8 +119,10 @@ input::placeholder {
 }
 
 input:focus {
-  border-color: #ffb8d1; /* Die gleiche rosa Farbe wie der Button */
-  outline: none; /* Verhindert, dass der orange Standard-Browser-Rahmen trotzdem kommt */
+  border-color: #ffb8d1;
+  /* Die gleiche rosa Farbe wie der Button */
+  outline: none;
+  /* Verhindert, dass der orange Standard-Browser-Rahmen trotzdem kommt */
 }
 
 button {
@@ -158,9 +160,8 @@ button[type="button"] {
 /* Dashboard */
 .app-header {
   display: grid;
-  grid-template-columns: 44px 1fr 48px;
+  grid-template-columns: auto 1fr 48px;
   align-items: center;
-  gap: 12px;
   min-height: 60px;
   padding: 5px 16px;
   background: var(--paper);
@@ -168,8 +169,9 @@ button[type="button"] {
 }
 
 .app-logo {
-  width: 38px;
-  height: 52px;
+  display: grid;
+  grid-template-columns: 70px 1fr 48px;
+  width: 70px;
   object-fit: contain;
 }
 
@@ -187,7 +189,7 @@ button[type="button"] {
   color: var(--ink);
   font-size: 0;
   text-decoration: none;
-  border: 3px solid var(--ink);
+  border: 2px solid var(--ink);
   border-radius: 50%;
 }
 
@@ -204,12 +206,11 @@ button[type="button"] {
 .dashboard>h2 {
   margin: 28px 0 18px;
   text-align: center;
-  font-size: 2rem;
   text-transform: uppercase;
 }
 
 .dashboard-section {
-  padding: 60px 20px;
+  padding: 40px 20px;
   margin: 20px;
 
 }
@@ -226,13 +227,12 @@ button[type="button"] {
 .section-title {
   display: flex;
   align-items: center;
-  gap: 12px;
   margin-bottom: 18px;
 }
 
 .section-title img {
-  width: 34px;
-  height: 34px;
+  width: 50px;
+  object-fit: contain;
 }
 
 .children-section h3 {
@@ -246,7 +246,7 @@ button[type="button"] {
   width: 42px;
   height: 42px;
   margin-right: 10px;
-  border: 4px solid var(--ink);
+  border: 2px solid var(--ink);
   border-radius: 50%;
   font-size: 1rem;
 }
@@ -258,13 +258,14 @@ button[type="button"] {
 }
 
 .status-box {
-  width: 100%;
   min-height: 58px;
-  margin: 0;
   background: var(--paper);
-  border: 3px solid var(--ink);
+  border: 2px solid var(--ink);
   box-shadow: 4px 4px 0 var(--ink);
   font-size: 1.05rem;
+  display: grid;
+  align-items: center;
+  justify-content: center;
 }
 
 .add-child-button {
@@ -396,7 +397,6 @@ button[type="button"] {
 .profile-page>h2 {
   margin: 28px 0 18px;
   text-align: center;
-  font-size: 2rem;
   text-transform: uppercase;
 }
 
@@ -534,4 +534,42 @@ button[type="button"] {
 #diaperChart {
   width: 100%;
   height: 100%;
+}
+
+
+.brand-link {
+  display: contents;
+  color: inherit;
+  text-decoration: none;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.avatar-options {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  width: 100%;
+}
+
+.avatar-options[hidden] {
+  display: none;
+}
+
+.avatar-options button {
+  margin: 0;
+  padding: 8px;
+}
+
+.avatar-options img {
+  width: 100%;
+  height: 54px;
+  object-fit: contain;
 }
