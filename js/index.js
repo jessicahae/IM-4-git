@@ -1,15 +1,15 @@
 async function init() {
-  await loadChildren(); // Erst Kinder laden und Buttons erstellen
-  refreshStock();       // Dann Bestand für das (nun aktive) Kind holen
+  await loadChildren();
+  refreshStock();
+  loadUserAvatar();
 }
-
 
 const showFormButton = document.getElementById("showAddChildForm");
 const addChildForm = document.getElementById("addChildForm");
 const cancelButton = document.getElementById("cancelAddChild");
 const childrenSwitcher = document.getElementById("childrenSwitcher");
 let diaperChart = null;
-
+let statusTimer = null;
 
 function createChildButton(child, isActive = false) {
   const button = document.createElement("button");
@@ -17,7 +17,7 @@ function createChildButton(child, isActive = false) {
   button.type = "button";
   button.className = isActive ? "child-button active" : "child-button";
   button.textContent = child.name;
-  button.dataset.sensorId = child.id_sensor;
+  button.dataset.sensorNumber = child.sensor_number;
 
   return button;
 }
@@ -48,12 +48,12 @@ async function loadChildren() {
         el.textContent = firstChild.name;
       });
 
-      loadDiaperStats(firstChild.id_sensor);
-      loadDiaperChart(firstChild.id_sensor);
+    loadDiaperStats(firstChild.sensor_number);
+    loadDiaperChart(firstChild.sensor_number);
 
-      loadDiaperStatus(firstChild.id_sensor);
-      if (statusTimer) clearInterval(statusTimer);
-      statusTimer = setInterval(() => loadDiaperStatus(firstChild.id_sensor), 30000);
+    loadDiaperStatus(firstChild.sensor_number);
+    if (statusTimer) clearInterval(statusTimer);
+statusTimer = setInterval(() => loadDiaperStatus(sensorNumber), 30000);
     }
   } catch (error) {
     console.error("Kinder konnten nicht geladen werden:", error);
@@ -116,14 +116,14 @@ document.getElementById("childrenSwitcher").addEventListener("click", (event) =>
     event.target.classList.add("active");
 
     const clickedName = event.target.textContent;
-    const sensorId = event.target.dataset.sensorId;
+    const sensorNumber = event.target.dataset.sensorNumber;
 
     document.querySelectorAll(".childNameDisplay").forEach(el => el.textContent = clickedName);
 
-    loadDiaperStats(sensorId);
-    loadDiaperChart(sensorId);
+loadDiaperStats(sensorNumber);
+loadDiaperChart(sensorNumber);
+loadDiaperStatus(sensorNumber);
 
-    loadDiaperStatus(sensorId);
     if (statusTimer) clearInterval(statusTimer);
     statusTimer = setInterval(() => loadDiaperStatus(sensorId), 30000);
   }
@@ -131,7 +131,7 @@ document.getElementById("childrenSwitcher").addEventListener("click", (event) =>
 
 async function refreshStock() {
   try {
-    const response = await fetch("api/get_stock.php?sensor_id=1");
+    const response = await fetch("api/get_stock.php?sensor_number=1");
     const data = await response.json();
 
     if (data.status !== "success") return;
@@ -160,6 +160,22 @@ async function refreshStock() {
   } catch (error) {
     console.error("Fehler beim Abrufen der Bestandsdaten", error);
   }
+}
+
+async function loadUserAvatar() {
+  const response = await fetch("api/user.php", {
+    credentials: "include",
+  });
+
+  const result = await response.json();
+
+  if (result.status !== "success") return;
+
+  const avatar = result.user.avatar || "avatar-1.png";
+
+  document.querySelectorAll(".user-avatar").forEach((image) => {
+    image.src = `img/profile/${avatar}`;
+  });
 }
 
 async function loadDiaperChart(sensorId = 1) {
@@ -247,8 +263,6 @@ async function loadDiaperStats(sensorId) {
 init();
 setInterval(refreshStock, 30000);
 
-let statusTimer; // Eigener Timer, getrennt vom Rest
-
 async function loadDiaperStatus(sensorId) {
   try {
     const response = await fetch(`api/get_diaper_status.php?sensor=${sensorId}`, {
@@ -273,5 +287,3 @@ async function loadDiaperStatus(sensorId) {
     console.error("Fehler beim Laden des Windel-Status", error);
   }
 }
-
-

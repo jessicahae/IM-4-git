@@ -13,15 +13,44 @@ showAvatarOptions.addEventListener("click", () => {
   avatarOptions.hidden = !avatarOptions.hidden;
 });
 
-avatarOptions.addEventListener("click", (event) => {
+avatarOptions.addEventListener("click", async (event) => {
   const button = event.target.closest("button");
   if (!button) return;
 
   selectedAvatar = button.dataset.avatar;
-  profileAvatar.src = `img/profile/${selectedAvatar}`;
+  updateAvatarImages(selectedAvatar);
   avatarOptions.hidden = true;
+
+  await saveUserData();
 });
 
+function updateAvatarImages(avatar) {
+  document.querySelectorAll(".user-avatar").forEach((image) => {
+    image.src = `img/profile/${avatar}`;
+  });
+}
+
+async function saveUserData() {
+  const response = await fetch("api/user.php", {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name: usernameInput.value.trim(),
+      email: emailInput.value.trim(),
+      password: passwordInput.value.trim(),
+      avatar: selectedAvatar,
+    }),
+  });
+
+  const result = await response.json();
+
+  if (result.status !== "success") {
+    alert(result.message || "Benutzerdaten konnten nicht gespeichert werden.");
+  }
+
+  return result;
+}
 
 async function loadUserData() {
   const response = await fetch("api/user.php", {
@@ -39,35 +68,20 @@ async function loadUserData() {
   profileTitleName.textContent = result.user.name;
 
   selectedAvatar = result.user.avatar || "avatar-1.png";
-profileAvatar.src = `img/profile/${selectedAvatar}`;
+updateAvatarImages(selectedAvatar);
 
 }
 
 userForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const response = await fetch("api/user.php", {
-    method: "PUT",
-    credentials: "include",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      name: usernameInput.value.trim(),
-      email: emailInput.value.trim(),
-      password: passwordInput.value.trim(),
-      avatar: selectedAvatar,
-    }),
-  });
-
-  const result = await response.json();
+  const result = await saveUserData();
 
   if (result.status === "success") {
     passwordInput.value = "";
     loadUserData();
-  } else {
-    alert(result.message || "Benutzerdaten konnten nicht gespeichert werden.");
   }
 });
-
 
 const profileChildrenList = document.getElementById("profileChildrenList");
 
