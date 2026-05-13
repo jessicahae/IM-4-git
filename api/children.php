@@ -55,6 +55,27 @@ if ($method === 'POST') {
         exit;
     }
 
+    $sensorStmt = $pdo->prepare("
+    SELECT id
+    FROM sensors
+    WHERE number = :number
+      AND type = 'diaper'
+    LIMIT 1
+");
+
+$sensorStmt->execute([
+    ':number' => $idSensor
+]);
+
+$sensorId = $sensorStmt->fetchColumn();
+
+if (!$sensorId) {
+    http_response_code(400);
+    echo json_encode(['status' => 'error', 'message' => 'Dieser Windel-Sensor existiert nicht']);
+    exit;
+}
+
+
     $stmt = $pdo->prepare("
         INSERT INTO children (id_users, name, id_sensor)
         VALUES (:id_users, :name, :id_sensor)
@@ -63,7 +84,7 @@ if ($method === 'POST') {
     $stmt->execute([
         ':id_users' => $userId,
         ':name' => $name,
-        ':id_sensor' => $idSensor
+':id_sensor' => $sensorId
     ]);
 
     echo json_encode([
@@ -71,7 +92,7 @@ if ($method === 'POST') {
         'child' => [
             'id' => $pdo->lastInsertId(),
             'name' => $name,
-            'id_sensor' => $idSensor
+            'id_sensor' => $sensorId
         ]
     ]);
     exit;

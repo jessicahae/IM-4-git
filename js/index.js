@@ -85,22 +85,16 @@ addChildForm.addEventListener("submit", async (e) => {
       body: JSON.stringify({ name: nameVal, id_sensor: sensorVal })
     });
 
-    if ((await res.json()).status === "success") {
-      document.querySelectorAll(".child-button").forEach(b => b.classList.remove("active"));
+const result = await res.json();
 
-const btn = createChildButton(
-  { name: nameVal, sensor_number: sensorVal },
-  true
-);
-      childrenSwitcher.insertBefore(btn, showFormButton);
+if (result.status === "success") {
+  addChildForm.reset();
+  addChildForm.hidden = true;
+  loadChildren();
+} else {
+  alert(result.message || "Kind konnte nicht gespeichert werden.");
+}
 
-      document.querySelectorAll(".childNameDisplay").forEach(span => {
-        span.textContent = nameVal;
-      });
-
-      addChildForm.reset();
-      addChildForm.hidden = true;
-    }
   } catch {
     alert("Netzwerkfehler beim Speichern.");
   }
