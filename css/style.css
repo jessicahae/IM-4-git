@@ -181,23 +181,6 @@ button[type="button"] {
   text-transform: uppercase;
 }
 
-.profile-link {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  color: var(--ink);
-  font-size: 0;
-  text-decoration: none;
-  border: 2px solid var(--ink);
-  border-radius: 50%;
-}
-
-.profile-link::before {
-  content: ":)";
-  font-size: 1rem;
-}
-
 .dashboard {
   max-width: 560px;
   margin: 0 auto;
@@ -224,9 +207,18 @@ button[type="button"] {
   text-transform: uppercase;
 }
 
+.chart-section h3 {
+  margin: 0;
+  font-size: 1.55rem;
+  line-height: 1.05;
+  text-transform: uppercase;
+  text-align: center;
+}
+
 .section-title {
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-bottom: 18px;
   gap: 7px;
 }
@@ -238,22 +230,6 @@ button[type="button"] {
 
 .icon{
   width: 30px;
-}
-
-.children-section h3 {
-  margin-bottom: 26px;
-}
-
-.children-section h3::before {
-  content: ":)";
-  display: inline-grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  margin-right: 10px;
-  border: 2px solid var(--ink);
-  border-radius: 50%;
-  font-size: 1rem;
 }
 
 .children-switcher {
@@ -579,3 +555,21 @@ button[type="button"] {
   object-fit: contain;
 }
 
+.header-avatar {
+    width: 44px;          /* Passt perfekt in deine 48px Header-Spalte */
+    height: 44px;
+    border-radius: 50%;   /* Macht es kreisrund */
+    border: 1.5px solid var(--ink); /* Der dicke schwarze Rand aus deinem Design */
+    object-fit: cover;
+    background-color: var(--paper);
+}
+
+/* 2. Styling für das Avatar neben der "KINDER" Überschrift */
+.section-avatar-icon {
+    width: 36px;          /* Ungefähr so groß wie das alte Baby-Gesicht */
+    height: 36px;
+    border-radius: 50%;   /* Auch hier schön rund */
+    border: 1.5px solid var(--ink); /* Passender Rand */
+    object-fit: cover;
+    background-color: var(--paper);
+}
