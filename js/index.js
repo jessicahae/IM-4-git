@@ -135,18 +135,20 @@ async function refreshStock() {
     document.getElementById("display-bestand").textContent = `${bestand} Windeln`;
     document.getElementById("display-verbrauch").textContent = verbrauch;
     document.getElementById("display-reichweite").textContent = `${tage} Tage`;
-    const stockSection = document.querySelector(".stock-status");
+const stockSection = document.querySelector(".stock-section");
+const stockStatus = document.getElementById("display-status");
 
 if (tage <= 2) {
-  stockStatus.textContent = "Status: Dringend";
+  stockStatus.textContent = "Vorrat nachkaufen!";
   stockSection.style.backgroundColor = "#ffd6dc";
 } else if (tage <= 5) {
-  stockStatus.textContent = "Status: Bald nötig";
+  stockStatus.textContent = "Vorrat hält nicht mehr lange";
   stockSection.style.backgroundColor = "#fff8c9";
 } else {
-  stockStatus.textContent = "Status: Genügend";
+  stockStatus.textContent = "Vorrat ausreichend";
   stockSection.style.backgroundColor = "";
 }
+
 
   } catch (error) {
     console.error("Fehler beim Abrufen der Bestandsdaten", error);
