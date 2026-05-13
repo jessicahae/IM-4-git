@@ -131,7 +131,9 @@ loadDiaperStatus(sensorNumber);
 
 async function refreshStock() {
   try {
-    const response = await fetch("api/get_stock.php?sensor_number=1");
+    const response = await fetch("api/get_stock.php", {
+  credentials: "include",
+});
     const data = await response.json();
 
     if (data.status !== "success") return;
