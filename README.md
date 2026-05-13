@@ -28,7 +28,7 @@ Der grundlegende Ablauf zur Nutzung der App gestaltet sich wie folgt (ein genaue
 
 1. **Registrieren** eines neuen Accounts.
 2. **Einloggen** in das Dashboard.
-3. **Kind(er) hinzufügen** -> Dabei z. B. die Sensornummer `67` wählen.
+3. **Kind(er) hinzufügen** -> Dabei bitte die Sensornummer `67` wählen.
 4. **Vorratssensor verbinden** -> Über den Hinweis bei „Vorrat“ unter „Profil“ den Vorratssensor mit der Nummer `69` verbinden.
 5. **Dashboard nutzen** -> Alle Live-Daten und Statistiken werden nun übersichtlich dargestellt.
 6. **Profilverwaltung nutzen** -> Auf der Profilseite können jederzeit das eigene Profilbild (Auswahl aus verschiedenen Avataren) sowie die persönlichen Benutzerdaten (Name, E-Mail, Passwort) individuell angepasst werden.
