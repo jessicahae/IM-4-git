@@ -70,34 +70,21 @@ Im Umsetzungsprozess haben wir viel darüber gelernt, wie wichtig klare Datenstr
 
 ---
 
-## ⚙️ Reproduzierbarkeit & Lokales Setup
+## ⚙️ Reproduzierbarkeit des Systems (Architektur & Workflow)
 
-Die WebApp wurde so konzipiert, dass sie flexibel auf unterschiedlichen Umgebungen lauffähig ist. Im Rahmen der Bewertung stehen zwei Möglichkeiten zur Verfügung:
+Um unser System nachzuvollziehen und reproduzieren zu können, ist das Verständnis unseres technischen Workflows und der Datenarchitektur zentral. Unser Vorgehen teilt sich in drei Hauptschritte auf:
 
-### 1. Live-Umgebung (Empfohlen für Begutachtung)
-Die Applikation ist bereits vollständig auf einem produktiven Webserver gehostet. Um den Begutachtungsprozess zu vereinfachen, ist keine eigene lokale Installation notwendig. 
-👉 **Link zur produktiven WebApp:** [https://im4-follevindl.jessicahaeseli.ch/](https://im4-follevindl.jessicahaeseli.ch/)
+### 1. Datenbank-Setup mit phpMyAdmin
+Im ersten Schritt haben wir unsere Entwicklungsumgebung aufgesetzt und die MySQL-Datenbank mithilfe von **phpMyAdmin** strukturiert. Dabei haben wir die grundlegenden Tabellen (`users`, `children`, `sensors`, `diaper_event`, `stock`) definiert. Wichtig war hierbei die Festlegung der korrekten Datentypen und primären/sekundären Schlüssel (wie z. B. die Sensor-Nummern), um eine saubere Zuordnung und Beziehung zwischen gewissen Tabellen zu ermöglichen.
 
-### 2. Lokale Reproduktion (Entwicklungsumgebung)
-Um das Projekt aus technischer Sicht lokal aufzusetzen und weiterzuentwickeln, sind folgende Schritte und Systemanforderungen notwendig:
+### 2. Datenübergabe (Physical Computing)
+Die Daten wurden uns direkt vom Physical-Computing-Team zur Verfügung gestellt. Sie haben dafür gesorgt, dass die Sensordaten (für Windelstatus und Vorrat) fortlaufend und passend in unsere beiden dafür vorgesehenen Datenbanktabellen (`diaper_event` und `stock`) eingespielt wurden.
 
-**Voraussetzungen:**
-* Ein lokaler Webserver (z. B. **XAMPP**, **MAMP** oder **WAMP**).
-* **PHP** (kompatibel mit aktuellen Versionen).
-* **MySQL** oder MariaDB als Datenbank-Managementsystem.
+### 3. Datenabruf durch die WebApp (`load.php`)
+Die Kernaufgabe der WebApp besteht darin, diese fortlaufend aktualisierte Datenbank auszulesen und visuell aufzubereiten. Dafür haben wir spezifische PHP-Skripte (wie z. B. `load.php` und unsere Dateien im `api/`-Ordner) geschrieben. 
+* Diese Skripte stellen die Verbindung zur Datenbank her und ziehen (via `SELECT`-Abfragen) immer die aktuellsten Datensätze für den jeweils eingeloggten Benutzer und seine verknüpften Sensoren.
+* Die ausgelesenen Daten werden anschliessend im JSON-Format an das JavaScript im Frontend übergeben.
+* Das Frontend verarbeitet diese Daten live weiter und aktualisiert damit das Dashboard, die Status-Anzeigen sowie die Chart.js-Statistiken.
 
-**Schritt-für-Schritt Installationsanleitung:**
-1. **Projektdateien platzieren:** 
-   Laden Sie den gesamten Projektordner in das Stammverzeichnis Ihres lokalen Webservers (bei XAMPP ist dies in der Regel der Ordner `htdocs`, bei MAMP der Ordner `htdocs` oder `www`).
-2. **Datenbank vorbereiten:** 
-   Starten Sie den Apache- und MySQL-Service. Öffnen Sie **phpMyAdmin** (meist unter `http://localhost/phpmyadmin`) und erstellen Sie eine neue, leere Datenbank (z. B. mit dem Namen `follevindl_db`).
-3. **Tabellenstruktur anlegen:** 
-   Da aus Sicherheits- und Datenschutzgründen kein vollständiger SQL-Dump der Live-Datenbank mitgeliefert wird, muss die Struktur der Datenbank (Tabellen: `users`, `children`, `sensors`, `diaper_event`, `stock`) anhand der oben im Kapitel *Projektstruktur* beschriebenen Architektur neu angelegt werden.
-4. **Datenbank-Konfiguration anpassen:** 
-   Navigieren Sie im Projektordner zur Konfigurationsdatei (z. B. `/system/config.php`). Öffnen Sie diese in einem Code-Editor und passen Sie die PDO-Verbindungsdaten an Ihre lokale Umgebung an:
-   * `DB_HOST` = `localhost`
-   * `DB_USER` = `root` (Standard bei XAMPP)
-   * `DB_PASS` = `[Ihr Passwort / oft leer]`
-   * `DB_NAME` = `follevindl_db`
-5. **Starten der WebApp:** 
-   Sobald die Konfiguration gespeichert ist, kann die Startseite der WebApp im Browser über die lokale URL (z. B. `http://localhost/follevindl/index.html`) aufgerufen werden.
+**Live-Umgebung:** 
+Das Resultat dieses Workflows ist bereits vollständig auf einem Webserver gehostet und kann direkt über unseren Link aufgerufen werden: [https://im4-follevindl.jessicahaeseli.ch/](https://im4-follevindl.jessicahaeseli.ch/)
