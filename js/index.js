@@ -8,6 +8,8 @@ const showFormButton = document.getElementById("showAddChildForm");
 const addChildForm = document.getElementById("addChildForm");
 const cancelButton = document.getElementById("cancelAddChild");
 const childrenSwitcher = document.getElementById("childrenSwitcher");
+let diaperChart = null;
+
 
 function createChildButton(child, isActive = false) {
   const button = document.createElement("button");
@@ -169,9 +171,13 @@ async function loadDiaperChart(sensorId = 1) {
 
   if (result.status !== "success") return;
 
-  const chartCanvas = document.getElementById("diaperChart");
+const chartCanvas = document.getElementById("diaperChart");
 
-  new Chart(chartCanvas, {
+if (diaperChart) {
+  diaperChart.destroy();
+}
+
+diaperChart = new Chart(chartCanvas, {
     type: "bar",
     data: {
       labels: result.labels,
