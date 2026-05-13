@@ -83,16 +83,6 @@ userForm.addEventListener("submit", async (event) => {
   }
 });
 
-  const result = await response.json();
-
-  if (result.status === "success") {
-    passwordInput.value = "";
-    loadUserData();
-  } else {
-    alert(result.message || "Benutzerdaten konnten nicht gespeichert werden.");
-  };
-
-
 const profileChildrenList = document.getElementById("profileChildrenList");
 
 async function loadProfileChildren() {
