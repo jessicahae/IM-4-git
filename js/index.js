@@ -48,12 +48,12 @@ async function loadChildren() {
         el.textContent = firstChild.name;
       });
 
-      loadDiaperStats(firstChild.id_sensor);
-      loadDiaperChart(firstChild.id_sensor);
+    loadDiaperStats(firstChild.sensor_number);
+    loadDiaperChart(firstChild.sensor_number);
 
-      loadDiaperStatus(firstChild.id_sensor);
-      if (statusTimer) clearInterval(statusTimer);
-      statusTimer = setInterval(() => loadDiaperStatus(firstChild.id_sensor), 30000);
+    loadDiaperStatus(firstChild.sensor_number);
+    if (statusTimer) clearInterval(statusTimer);
+statusTimer = setInterval(() => loadDiaperStatus(sensorNumber), 30000);
     }
   } catch (error) {
     console.error("Kinder konnten nicht geladen werden:", error);
@@ -131,7 +131,7 @@ loadDiaperStatus(sensorNumber);
 
 async function refreshStock() {
   try {
-    const response = await fetch("api/get_stock.php?sensor_id=1");
+    const response = await fetch("api/get_stock.php?sensor_number=1");
     const data = await response.json();
 
     if (data.status !== "success") return;

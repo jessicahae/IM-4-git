@@ -15,7 +15,7 @@ try {
     $stmtStock = $pdo->prepare("
     SELECT amount
     FROM stock
-    $stmtStock->execute([$sensorNumber]);
+    WHERE sensors_number = ?
     ORDER BY time DESC, id DESC
     LIMIT 1
 ");
