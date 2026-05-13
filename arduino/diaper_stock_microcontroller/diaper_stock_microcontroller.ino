@@ -119,7 +119,7 @@ unsigned long lastScalePrint = 0;
 // Sensor-Schwellenwerte
 // --------------------------------------------------
 
-const int moistureThreshold = 1600;
+const int moistureThreshold = 1800;
 const int gasChangeThreshold = 300;
 
 // --------------------------------------------------
