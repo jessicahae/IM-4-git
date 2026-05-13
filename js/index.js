@@ -41,7 +41,7 @@ async function loadChildren() {
       childrenSwitcher.insertBefore(button, showFormButton);
     });
 
-   if (result.children.length > 0) {
+if (result.children.length > 0) {
   const firstChild = result.children[0];
 
   document.querySelectorAll(".childNameDisplay").forEach((el) => {
@@ -51,7 +51,7 @@ async function loadChildren() {
   loadDiaperStats(firstChild.id_sensor);
   loadDiaperChart(firstChild.id_sensor);
 }
- catch (error) {
+} catch (error) {
     console.error("Kinder konnten nicht geladen werden:", error);
   }
 }
