@@ -108,6 +108,11 @@ if (!$sensorId) {
     echo json_encode(['status' => 'error', 'message' => 'Dieser Windel-Sensor existiert nicht']);
     exit;
 }
+    $stmt = $pdo->prepare("
+    UPDATE children
+    SET id_sensor = :id_sensor
+    WHERE id = :id AND id_users = :id_users
+");
 
 
     $stmt->execute([
