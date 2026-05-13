@@ -192,31 +192,29 @@ function createStockSensorPanel(sensor) {
   const panel = document.createElement("article");
   panel.className = "profile-panel";
 
+  const statusText = sensor.connected ? "Verbunden" : "Nicht verbunden";
+  const buttonText = sensor.connected ? "Verbunden" : "Verbinden";
+
   panel.innerHTML = `
     <div class="profile-panel-header">
       <div>
-        <h4>Vorrat-Sensor</h4>
-        <span class="connection-status">Verbunden</span>
+        <h4>Vorrat-Sensor ${sensor.number}</h4>
+        <span class="connection-status">${statusText}</span>
       </div>
-      <button type="button" class="delete-button">Papierkorb</button>
     </div>
 
     <div class="profile-row">
-      <input type="text" value="${sensor.number}" class="sensor-input" />
-      <button type="button" class="profile-action-button">Ändern</button>
+      <div class="sensor-field">Sensor: ${sensor.number}</div>
+      <button type="button" class="profile-action-button" ${sensor.connected ? "disabled" : ""}>
+        ${buttonText}
+      </button>
     </div>
   `;
 
-  const sensorInput = panel.querySelector(".sensor-input");
-  const editButton = panel.querySelector(".profile-action-button");
-  const deleteButton = panel.querySelector(".delete-button");
+  const connectButton = panel.querySelector(".profile-action-button");
 
-  editButton.addEventListener("click", () => {
-    updateStockSensor(sensor.id, sensorInput.value);
-  });
-
-  deleteButton.addEventListener("click", () => {
-    deleteStockSensor(sensor.id);
+  connectButton.addEventListener("click", () => {
+    updateStockSensor(sensor.number);
   });
 
   return panel;
@@ -256,12 +254,12 @@ addStockSensorForm.addEventListener("submit", async (event) => {
   }
 });
 
-async function updateStockSensor(id, number) {
+async function updateStockSensor(number) {
   const response = await fetch("api/sensors.php", {
     method: "PUT",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id, number }),
+    body: JSON.stringify({ number }),
   });
 
   const result = await response.json();
