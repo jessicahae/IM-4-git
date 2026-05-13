@@ -521,6 +521,12 @@ button[type="button"] {
     background-color: var(--paper);
 }
 
+.stock-status a {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
+
 @media (min-width: 700px) {
   .dashboard,
   .profile-page,

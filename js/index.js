@@ -127,11 +127,20 @@ async function refreshStock() {
     const response = await fetch("api/get_stock.php", {
   credentials: "include",
 });
-    const data = await response.json();
+const data = await response.json();
 
-    if (data.status !== "success") return;
+if (data.status !== "success") {
+  document.getElementById("display-bestand").textContent = "-";
+  document.getElementById("display-verbrauch").textContent = "-";
+  document.getElementById("display-reichweite").textContent = "-";
+  document.getElementById("display-status").innerHTML =
+    'Kein Vorratssensor verbunden. <a href="profile.html">Im Profil verbinden</a>';
 
-    const bestand = data.bestand;
+  return;
+}
+
+const bestand = data.bestand;
+
     const verbrauch = data.durchschnitt;
     const tage = verbrauch > 0 ? Math.floor(bestand / verbrauch) : 0;
 
