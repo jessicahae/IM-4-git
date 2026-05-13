@@ -135,7 +135,7 @@ async function refreshStock() {
     document.getElementById("display-bestand").textContent = `${bestand} Windeln`;
     document.getElementById("display-verbrauch").textContent = verbrauch;
     document.getElementById("display-reichweite").textContent = `${tage} Tage`;
-    const stockSection = document.querySelector(".stock-section");
+    const stockSection = document.querySelector(".stock-status");
 
 if (tage <= 2) {
   stockStatus.textContent = "Status: Dringend";
