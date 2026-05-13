@@ -19,6 +19,7 @@ $sql = "
     FROM diaper_event
     WHERE sensors_number = :sensor
       AND time >= DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY)
+      AND type = 'trocken'
     GROUP BY WEEKDAY(time)
     ORDER BY weekday
 ";
