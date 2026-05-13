@@ -41,12 +41,17 @@ async function loadChildren() {
       childrenSwitcher.insertBefore(button, showFormButton);
     });
 
-    if (result.children.length > 0) {
-      document.querySelectorAll(".childNameDisplay").forEach((el) => {
-        el.textContent = result.children[0].name;
-      });
-    }
-  } catch (error) {
+   if (result.children.length > 0) {
+  const firstChild = result.children[0];
+
+  document.querySelectorAll(".childNameDisplay").forEach((el) => {
+    el.textContent = firstChild.name;
+  });
+
+  loadDiaperStats(firstChild.id_sensor);
+  loadDiaperChart(firstChild.id_sensor);
+}
+ catch (error) {
     console.error("Kinder konnten nicht geladen werden:", error);
   }
 }
@@ -106,12 +111,13 @@ document.getElementById("childrenSwitcher").addEventListener("click", (event) =>
     document.querySelectorAll(".child-button").forEach(b => b.classList.remove("active"));
     event.target.classList.add("active");
     
-    // 2. Namen aktualisieren
-    const clickedName = event.target.textContent;
-    document.querySelectorAll(".childNameDisplay").forEach(el => el.textContent = clickedName);
-    
-    // 3. WICHTIG: Vorrat für DIESES Kind neu laden
-    refreshStock(); 
+const clickedName = event.target.textContent;
+const sensorId = event.target.dataset.sensorId;
+
+document.querySelectorAll(".childNameDisplay").forEach(el => el.textContent = clickedName);
+
+loadDiaperStats(sensorId);
+loadDiaperChart(sensorId);
   }
 });
 
@@ -213,5 +219,4 @@ async function loadDiaperStats(sensorId) {
 }
 
 init();
-loadDiaperChart();
-setInterval(refreshDashboardStock, 15000);
+setInterval(refreshStock, 30000);
