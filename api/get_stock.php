@@ -1,12 +1,33 @@
 <?php
+session_start();
 require_once("../system/config.php");
 header('Content-Type: application/json');
 
-// Wir holen die Sensor-Nummer aus der Anfrage (z.B. get_stock.php?sensor_number=1)
-$sensorNumber = isset($_GET['sensor_number']) ? intval($_GET['sensor_number']) : 0;
+if (!isset($_SESSION['id_users'])) {
+    http_response_code(401);
+    echo json_encode(["status" => "error", "message" => "Nicht eingeloggt"]);
+    exit;
+}
 
-if ($sensorNumber === 0) {
-    echo json_encode(["status" => "error", "message" => "Keine Sensor-Nummer übergeben"]);
+$userId = $_SESSION['id_users'];
+
+$stmtSensor = $pdo->prepare("
+    SELECT stock_sensor_number
+    FROM users
+    WHERE ID = :user_id
+");
+
+$stmtSensor->execute([
+    ':user_id' => $userId
+]);
+
+$sensorNumber = $stmtSensor->fetchColumn();
+
+if (!$sensorNumber) {
+    echo json_encode([
+        "status" => "error",
+        "message" => "Kein Vorratssensor verbunden"
+    ]);
     exit;
 }
 
@@ -15,7 +36,7 @@ try {
     $stmtStock = $pdo->prepare("
     SELECT amount
     FROM stock
-    $stmtStock->execute([$sensorNumber]);
+    WHERE sensors_number = ?
     ORDER BY time DESC, id DESC
     LIMIT 1
 ");
