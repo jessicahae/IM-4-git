@@ -135,6 +135,19 @@ async function refreshStock() {
     document.getElementById("display-bestand").textContent = `${bestand} Windeln`;
     document.getElementById("display-verbrauch").textContent = verbrauch;
     document.getElementById("display-reichweite").textContent = `${tage} Tage`;
+    const stockSection = document.querySelector(".stock-section");
+
+if (tage <= 2) {
+  stockStatus.textContent = "Status: Dringend";
+  stockSection.style.backgroundColor = "#ffd6dc";
+} else if (tage <= 5) {
+  stockStatus.textContent = "Status: Bald nötig";
+  stockSection.style.backgroundColor = "#fff8c9";
+} else {
+  stockStatus.textContent = "Status: Genügend";
+  stockSection.style.backgroundColor = "";
+}
+
   } catch (error) {
     console.error("Fehler beim Abrufen der Bestandsdaten", error);
   }
