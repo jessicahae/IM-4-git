@@ -4,8 +4,6 @@ async function init() {
 }
 
 
-
-
 const showFormButton = document.getElementById("showAddChildForm");
 const addChildForm = document.getElementById("addChildForm");
 const cancelButton = document.getElementById("cancelAddChild");
@@ -145,13 +143,12 @@ async function refreshStock() {
     document.getElementById("display-reichweite").textContent = `${tage} Tage`;
     const stockSection = document.querySelector(".stock-section");
     const stockStatus = document.getElementById("display-status");
-
     if (tage <= 2) {
       stockStatus.textContent = "Vorrat nachkaufen!";
-      stockSection.style.backgroundColor = "#ffd6dc";
+      stockSection.style.backgroundColor = "rgba(255, 214, 220, 0.4)"; // Pink mit 60% Transparenz
     } else if (tage <= 5) {
       stockStatus.textContent = "Vorrat hält nicht mehr lange";
-      stockSection.style.backgroundColor = "#fff8c9";
+      stockSection.style.backgroundColor = "rgba(255, 248, 201, 0.4)"; // Gelb mit 60% Transparenz
     } else {
       stockStatus.textContent = "Vorrat ausreichend";
       stockSection.style.backgroundColor = "";
