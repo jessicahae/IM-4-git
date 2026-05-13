@@ -51,6 +51,8 @@ async function loadChildren() {
       loadDiaperStats(firstChild.id_sensor);
       loadDiaperChart(firstChild.id_sensor);
 
+      console.log(firstChild.id_sensor);
+
       loadDiaperStatus(firstChild.id_sensor);
       if (statusTimer) clearInterval(statusTimer);
       statusTimer = setInterval(() => loadDiaperStatus(firstChild.id_sensor), 30000);
