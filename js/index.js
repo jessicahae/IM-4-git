@@ -32,6 +32,10 @@ async function loadChildren() {
 
     if (result.status !== "success") return;
 
+    document.querySelectorAll(".child-button").forEach((button) => {
+  button.remove();
+});
+
     result.children.forEach((child, index) => {
       const button = createChildButton(child, index === 0);
       childrenSwitcher.insertBefore(button, showFormButton);
@@ -110,8 +114,6 @@ document.getElementById("childrenSwitcher").addEventListener("click", (event) =>
     refreshStock(); 
   }
 });
-
-refreshStock();
 
 async function refreshStock() {
   try {
@@ -244,6 +246,5 @@ async function loadDiaperChart(sensorId = 1) {
 }
 
 init();
-loadChildren();
 loadDiaperChart();
 setInterval(refreshDashboardStock, 15000);
