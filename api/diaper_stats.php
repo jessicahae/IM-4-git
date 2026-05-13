@@ -22,6 +22,7 @@ $stmtToday = $pdo->prepare("
     SELECT COUNT(*)
     FROM diaper_event
     WHERE sensors_number = :sensor
+        AND type = 'trocken'
       AND DATE(time) = CURDATE()
 ");
 
@@ -35,6 +36,7 @@ $stmtWeek = $pdo->prepare("
     SELECT COUNT(*)
     FROM diaper_event
     WHERE sensors_number = :sensor
+    AND type = 'trocken'
       AND time >= DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY)
 ");
 
