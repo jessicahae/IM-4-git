@@ -15,7 +15,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
     $stmt = $pdo->prepare("
-        SELECT id, name, email
+        SELECT id, name, email, avatar
         FROM users
         WHERE id = :id
     ");
@@ -36,6 +36,7 @@ if ($method === 'PUT') {
     $name = trim($data['name'] ?? '');
     $email = trim($data['email'] ?? '');
     $password = trim($data['password'] ?? '');
+    $avatar = trim($data['avatar'] ?? '');
 
     if ($name === '' || $email === '') {
         http_response_code(400);
@@ -48,7 +49,7 @@ if ($method === 'PUT') {
 
         $stmt = $pdo->prepare("
             UPDATE users
-            SET name = :name, email = :email, password = :password
+            SET name = :name, email = :email, password = :password, avatar = :avatar
             WHERE id = :id
         ");
 
@@ -56,19 +57,21 @@ if ($method === 'PUT') {
             ':name' => $name,
             ':email' => $email,
             ':password' => $hashedPassword,
-            ':id' => $userId
+            ':id' => $userId, 
+            ':avatar' => $avatar
         ]);
     } else {
         $stmt = $pdo->prepare("
             UPDATE users
-            SET name = :name, email = :email
+            SET name = :name, email = :email, avatar = :avatar
             WHERE id = :id
         ");
 
         $stmt->execute([
             ':name' => $name,
             ':email' => $email,
-            ':id' => $userId
+            ':id' => $userId,
+            ':avatar' => $avatar
         ]);
     }
 

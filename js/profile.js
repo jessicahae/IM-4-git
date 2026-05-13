@@ -3,6 +3,25 @@ const profileTitleName = document.getElementById("profileTitleName");
 const usernameInput = document.getElementById("username");
 const emailInput = document.getElementById("profileEmail");
 const passwordInput = document.getElementById("profilePassword");
+const profileAvatar = document.getElementById("profileAvatar");
+const showAvatarOptions = document.getElementById("showAvatarOptions");
+const avatarOptions = document.getElementById("avatarOptions");
+
+let selectedAvatar = "avatar-1.png";
+
+showAvatarOptions.addEventListener("click", () => {
+  avatarOptions.hidden = !avatarOptions.hidden;
+});
+
+avatarOptions.addEventListener("click", (event) => {
+  const button = event.target.closest("button");
+  if (!button) return;
+
+  selectedAvatar = button.dataset.avatar;
+  profileAvatar.src = `img/profile/${selectedAvatar}`;
+  avatarOptions.hidden = true;
+});
+
 
 async function loadUserData() {
   const response = await fetch("api/user.php", {
@@ -18,6 +37,10 @@ async function loadUserData() {
   passwordInput.value = "";
 
   profileTitleName.textContent = result.user.name;
+
+  selectedAvatar = result.user.avatar || "avatar-1.png";
+profileAvatar.src = `img/profile/${selectedAvatar}`;
+
 }
 
 userForm.addEventListener("submit", async (event) => {
@@ -31,6 +54,7 @@ userForm.addEventListener("submit", async (event) => {
       name: usernameInput.value.trim(),
       email: emailInput.value.trim(),
       password: passwordInput.value.trim(),
+      avatar: selectedAvatar,
     }),
   });
 

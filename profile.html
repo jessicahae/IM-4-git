@@ -24,8 +24,19 @@
     <h2>Profil von <span id="profileTitleName"></span></h2>
 
     <section class="profile-avatar-section">
-      <div class="profile-avatar">☺</div>
-      <button type="button" class="profile-primary-button">Profilbild ändern</button>
+<img src="img/profile/avatar-1.png" alt="Profilbild" class="profile-avatar" id="profileAvatar" />
+
+<button type="button" class="profile-primary-button" id="showAvatarOptions">
+  Profilbild ändern
+</button>
+
+<div class="avatar-options" id="avatarOptions" hidden>
+  <button type="button" data-avatar="avatar-1.png"><img src="img/profile/avatar-1.png" alt="Avatar 1"></button>
+  <button type="button" data-avatar="avatar-2.png"><img src="img/profile/avatar-2.png" alt="Avatar 2"></button>
+  <button type="button" data-avatar="avatar-3.png"><img src="img/profile/avatar-3.png" alt="Avatar 3"></button>
+  <button type="button" data-avatar="avatar-4.png"><img src="img/profile/avatar-4.png" alt="Avatar 4"></button>
+</div>
+
     </section>
 
     <section class="profile-section">
