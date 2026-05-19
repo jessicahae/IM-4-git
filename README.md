@@ -93,7 +93,7 @@ Die WebApp basiert auf **HTML, CSS, JavaScript, PHP und MySQL**. Für die Instal
 * **Bildmaterial:** [Bilder ergänzen]
 * **Inbetriebnahme:** Das physische Artefakt muss die Messwerte für Windelstatus und Vorrat in die Datenbanktabellen `diaper_event` und `stock` übertragen.
 
-## technische Details
+## Technische Details
 
 ### Projektstruktur / Code-Struktur
 
