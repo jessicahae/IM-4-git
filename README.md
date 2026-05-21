@@ -81,8 +81,51 @@ Die WebApp basiert auf **HTML, CSS, JavaScript, PHP und MySQL**. Für die Instal
    Das Physical-Computing-System muss Sensordaten fortlaufend in die Tabellen `diaper_event` und `stock` schreiben. Erst dadurch werden Live-Daten in der WebApp angezeigt.
 
 #### Bauanleitung Physical Computing
+1. **Arduino IDE aufsetzen**
+    * Installiere unter https://www.arduino.cc/en/software Arduino IDE.
+    * Öffne Ardunio IDE und lade die ESP-Boards unter Tools / Board / Board Manager -> esp32 von espressif suchen und installieren
+    * Mikrocontrollerboard auswählen unter Tools / Board / esp32 / ESP32-C6 Dev Module
+    * Danach im Bibliotheksmanager folgende Bibliotheken installieren:
+    * HX711 -> Wägesensor
+    * Adafruit NeoPixel -> LED-Ring
+    * WiFi.h -> WLAN-Verbindung
+    * HTTPClient.h -> API-Kommunikation
+    * Arduino_JSON.h -> JSON-Verarbeitung
+    * Code für Microcontroller ist unter arduino/diaper_stock_microcontoller/diaper_stock_microcontroller.ino abgelegt
 
-[Dieser Abschnitt muss vom Physical-Computing-Team ergänzt werden.]
+2. **Verwendete Sensoren/Aktoren**
+    * Bodenfeuchtigkeitssensor (Capacitive Soil Moisture Sensor) -> Erkennt wenn Baby kleine Geschäft verrichtet hat.
+    * Gas-Sensor (MQ-135) -> Ergänzt Feuchtigkeitssensor, um grosses Geschäft zu erkennen.
+    * Gewichtsensor (Wägesensor mit HX711) -> Misst aktuellen Windelstock
+    * Bedrahtete LED -> Leuchtet so lange bis Referenzgewicht von einer Windel erfasst wurde
+    * Lauflicht (WS2812B (“Neopixel”)) -> -	Leuchtet Gelb bei kleinem Geschäft und rot bei grossem Geschäft
+
+3. **Komponenten in MC einstecken** 
+    * Anschlüsse können dem Steckplan entnommen werden.
+
+4. **Systemstart & Kalibrierung**
+    * Waage muss beim Start leer sein (Tare/Nullpunkt).
+    * Referenz-LED leuchtet -> genau eine Windel auflegen.
+    * Das Gewicht wird 10 Sekunden gemessen und als Referenz gespeichert.
+    * Danach kalibriert sich der MQ-135 für 60 Sekunden.
+    * Währenddessen leuchtet der LED-Ring blau.
+
+5. **LED-Status** 
+    * Blau → Kalibrierung läuft
+    * Grün → Alles normal
+    * Gelb → Windel nass
+    * Rot → Windel voll
+
+6. **Datenübertragung**
+    * api/load/diaper.php -> Ereignisse (nass, voll, trocken)
+    * api/load/stock.php -> Windelbestand
+    
+7. **Hinweise**
+    * Waage muss beim Start leer sein.
+    * Referenz neu messen bei anderem Windeltyp.
+    * Ereignisse werden erst nach stabiler Messung bestätigt.
+    * Während der Kalibrierung können keine neuen Ereignisse erkannt werden.
+
 
 * **Komponentenplan:** [Schaubild ergänzen]
   * eingesetzte Komponenten
@@ -152,7 +195,12 @@ Die Authentifizierung erfolgt über Registrierung und Login. Nur eingeloggte Ben
 * Die Unterscheidung zwischen interner Sensor-ID und externer Sensor-Nummer führte anfangs zu falschen Datenabfragen. Das Problem wurde mit einem sauberen `JOIN` in `children.php` gelöst.
 * Die vollständige Verwaltung von Vorratssensoren über die WebApp wurde nicht umgesetzt. Vorratssensoren werden aktuell primär manuell in der Datenbank erfasst und können anschliessend mit einem Profil verbunden werden.
 * Reale Sensordaten und reale Bedingungen können zusätzliche Herausforderungen verursachen, die mit diesen Daten nicht vollständig simuliert werden können.
-* [Weitere bekannte Bugs oder Verbesserungspunkte ergänzen]
+* Die Waage muss beim Start leer sein, damit der Nullpunkt korrekt gesetzt werden kann. Für die Bestandsberechnung muss zudem genau eine Referenzwindel eingemessen werden.
+* Sensorwerte können leicht schwanken. Deshalb werden Ereignisse und Bestandsänderungen erst nach einer stabilen Messdauer bestätigt.
+* Der MQ-135 erkennt keine exakten medizinischen Werte, sondern nur Veränderungen gegenüber dem kalibrierten Ausgangswert. Während der Neukalibrierung können keine neuen Windelereignisse erkannt werden.
+* Die Waage kann durch Positionierung, Bewegungen oder die Stromversorgung beeinflusst werden.
+* Sensor-Nummern müssen bereits in der Tabelle `sensors` vorhanden sein, da sonst Foreign-Key-Fehler beim Speichern entstehen können.
+
 
 ## Umsetzungsprozess
 
@@ -162,11 +210,21 @@ Im Umsetzungsprozess wurde deutlich, wie wichtig klare Datenstrukturen und einde
 
 Das Team hat ausserdem gelernt, dass Dummy-Daten zwar beim Testen helfen, reale Sensordaten aber nochmals andere Anforderungen an Stabilität, Datenqualität und Fehlerbehandlung stellen.
 
+Ausserdem zeigte sich, dass Sensorwerte in der Praxis oft schwanken und nicht immer eindeutig sind. Deshalb wurde eine zusätzliche Logik benötigt, welche Messwerte über eine gewisse Zeit überprüft und Ereignisse erst nach stabilen Messungen bestätigt.
+
+Hilfreich war der schrittweise Aufbau des Systems. Die Sensoren wurden zuerst einzeln getestet und anschliessend schrittweise kombiniert. Dadurch konnten Fehler schneller erkannt und eingegrenzt werden. Für zukünftige Projekte wäre es sinnvoll, die Pinbelegung und die Datenbankstruktur bereits zu Beginn definitiv festzulegen, da spätere Änderungen zusätzlichen Aufwand verursachen.
+
 ### Herausforderungen & Lösungen
 
 * **Sensor-ID vs. Sensor-Nummer:** In der Tabelle `sensors` gibt es eine interne ID und eine externe Sensor-Nummer. Die Tabelle `children` speichert die interne ID, während die Event-Tabellen mit der Sensor-Nummer arbeiten. Dies führte anfangs zu falschen Datenabfragen. Gelöst wurde das Problem mit einem `JOIN` in `children.php`, sodass das Dashboard durchgehend mit der korrekten Sensor-Nummer arbeiten kann.
 * **Vereinfachung der Profilseite:** Ursprünglich war geplant, Vorratssensoren über die WebApp vollständig zu verwalten. Da diese primär manuell in der Datenbank erfasst werden, wurde die Logik angepasst. Benutzende können nun vorhandene Sensoren mit ihrem Profil verbinden.
 * **Abgleich von Backend und Frontend:** Durch intensives Debugging wurde klar, dass Backend und Frontend exakt dieselbe Logik verwenden müssen, damit die Anwendung zuverlässig funktioniert.
+* **Kombination mehrerer Sensoren:** Feuchtigkeits-, Gas- und Gewichtssensor mussten parallel funktionieren. Dafür wurde eine Ereignislogik umgesetzt, welche `nass`, `voll` und `trocken` abhängig von stabilen Sensorwerten speichert.
+* **Schwankende Sensorwerte:** Da Sensoren keine konstanten Werte liefern, werden Ereignisse erst nach einer stabilen Messdauer bestätigt.
+* **Bestandsmessung:** Statt fixer Rohwerte wird beim Start eine Referenzwindel gemessen. Dadurch kann der Bestand flexibler berechnet werden.
+* **Datenbankabhängigkeiten:** Sensor-Nummern mussten zuerst in der Tabelle `sensors` vorhanden sein, bevor Daten in `diaper` oder `stock` gespeichert werden konnten.
+* **Schrittweises Testen:** Die Sensoren wurden zuerst einzeln und danach gemeinsam getestet, wodurch Fehler einfacher gefunden werden konnten.
+
 
 ### KI-Einsatz
 
@@ -175,7 +233,12 @@ Mögliche Ergänzung:
 * Unterstützung bei Formulierungen und Strukturierung der Projektdokumentation.
 * Unterstützung beim Debugging oder bei der Erklärung technischer Zusammenhänge.
 * Unterstützung bei der Vereinheitlichung der README-Struktur.
+* Die KI half beim Kombinieren der Sensorcodes, beim Aufbau der Ereignislogik, beim Schreiben der PHP-Endpunkte.
 
 ### Fazit
 
 Folle Vindl verbindet Physical Computing mit einer alltagsnahen WebApp. Die Anwendung zeigt, wie Sensordaten über eine Datenbank in eine verständliche Benutzeroberfläche übertragen werden können. Besonders wichtig waren dabei eine klare Datenstruktur, verständliche Schnittstellen und eine konsistente Logik zwischen Backend und Frontend.
+
+
+
+
