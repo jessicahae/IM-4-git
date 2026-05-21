@@ -18,8 +18,9 @@ $sql = "
         COUNT(*) AS amount
     FROM diaper_event
     WHERE sensors_number = :sensor
-      AND time >= DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY)
       AND type = 'trocken'
+      AND time >= DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY)
+      AND time < DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY)
     GROUP BY WEEKDAY(time)
     ORDER BY weekday
 ";
