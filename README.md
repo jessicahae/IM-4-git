@@ -186,6 +186,51 @@ Die WebApp liest die fortlaufend aktualisierte Datenbank aus und bereitet die Da
 
 Die Datenbank besteht mindestens aus den Tabellen `users`, `children`, `sensors`, `diaper_event` und `stock`.
 
+```mermaid
+erDiagram
+    USERS {
+        int ID PK
+        string email
+        string password
+        string name
+        string avatar
+        int stock_sensor_number
+    }
+
+    CHILDREN {
+        int id PK
+        int id_users FK
+        string name
+        int id_sensor FK
+    }
+
+    SENSORS {
+        int id PK
+        int number
+        string type
+    }
+
+    DIAPER_EVENT {
+        int id PK
+        string type
+        int sensors_number
+        timestamp time
+    }
+
+    STOCK {
+        int id PK
+        int sensors_number
+        int amount
+        timestamp time
+    }
+
+    USERS ||--o{ CHILDREN : "hat"
+    SENSORS ||--o{ CHILDREN : "Windel-Sensor via sensors.id"
+    SENSORS ||--o{ DIAPER_EVENT : "Events via sensors.number"
+    SENSORS ||--o{ STOCK : "Vorrat via sensors.number"
+    USERS }o--|| SENSORS : "Vorratssensor via stock_sensor_number"
+```
+
 ### Authentifizierung
 
 Die Authentifizierung erfolgt über Registrierung und Login. Nur eingeloggte Benutzende können Dashboard und Profilverwaltung nutzen. Die App verwendet PHP-Sessions, um geschützte Bereiche abzusichern.
