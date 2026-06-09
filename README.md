@@ -50,7 +50,7 @@ Der grundlegende Ablauf zur Nutzung der App ist wie folgt aufgebaut:
 ### Setup
 
 * **WebApp:** [https://im4-follevindl.jessicahaeseli.ch/](https://im4-follevindl.jessicahaeseli.ch/)  
-* **Video-Dokumentation:** Link
+* **Video-Dokumentation:** [https://youtu.be/YfWXdUDM4yk](https://youtu.be/YfWXdUDM4yk)
 
 #### Installationsanleitung WebApp
 
