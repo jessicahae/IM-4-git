@@ -43,8 +43,8 @@ Der grundlegende Ablauf zur Nutzung der App ist wie folgt aufgebaut:
 5. **Dashboard nutzen**: Alle Live-Daten und Statistiken werden übersichtlich dargestellt.
 6. **Profilverwaltung nutzen**: Auf der Profilseite können das eigene Profilbild sowie persönliche Benutzerdaten wie Name, E-Mail und Passwort angepasst werden.
 
-* **Figma:** https://www.figma.com/design/uJjbZn30EALlgVJli1hM1l/IM-4-%E2%80%93-App-Konzeption-Vorlage?node-id=152-143&t=UIo34B0GKdiUiSTJ-1
-* **User Flow:** https://www.figma.com/design/uJjbZn30EALlgVJli1hM1l/IM-4-%E2%80%93-App-Konzeption-Vorlage?node-id=152-143&t=UIo34B0GKdiUiSTJ-1
+* **Figma:** <https://www.figma.com/design/uJjbZn30EALlgVJli1hM1l/IM-4-%E2%80%93-App-Konzeption-Vorlage?node-id=152-143&t=UIo34B0GKdiUiSTJ-1>
+* **User Flow:** <https://www.figma.com/design/uJjbZn30EALlgVJli1hM1l/IM-4-%E2%80%93-App-Konzeption-Vorlage?node-id=152-143&t=UIo34B0GKdiUiSTJ-1>
 * **Angedachte Features:** Verwaltung von Windelstatus, Windelvorrat, Verbrauchsstatistik und Profilinformationen.
 
 ### Setup
@@ -81,8 +81,9 @@ Die WebApp basiert auf **HTML, CSS, JavaScript, PHP und MySQL**. Für die Instal
    Das Physical-Computing-System muss Sensordaten fortlaufend in die Tabellen `diaper_event` und `stock` schreiben. Erst dadurch werden Live-Daten in der WebApp angezeigt.
 
 #### Bauanleitung Physical Computing
+
 1. **Arduino IDE aufsetzen**
-    * Installiere unter https://www.arduino.cc/en/software Arduino IDE.
+    * Installiere unter <https://www.arduino.cc/en/software> Arduino IDE.
     * Öffne Ardunio IDE und lade die ESP-Boards unter Tools / Board / Board Manager -> esp32 von espressif suchen und installieren
     * Mikrocontrollerboard auswählen unter Tools / Board / esp32 / ESP32-C6 Dev Module
     * Danach im Bibliotheksmanager folgende Bibliotheken installieren:
@@ -98,9 +99,9 @@ Die WebApp basiert auf **HTML, CSS, JavaScript, PHP und MySQL**. Für die Instal
     * Gas-Sensor (MQ-135) -> Ergänzt Feuchtigkeitssensor, um grosses Geschäft zu erkennen.
     * Gewichtsensor (Wägesensor mit HX711) -> Misst aktuellen Windelstock
     * Bedrahtete LED -> Leuchtet so lange bis Referenzgewicht von einer Windel erfasst wurde
-    * Lauflicht (WS2812B (“Neopixel”)) -> -	Leuchtet Gelb bei kleinem Geschäft und rot bei grossem Geschäft
+    * Lauflicht (WS2812B (“Neopixel”)) -> -Leuchtet Gelb bei kleinem Geschäft und rot bei grossem Geschäft
 
-3. **Komponenten in MC einstecken** 
+3. **Komponenten in MC einstecken**
     * Anschlüsse können dem Steckplan entnommen werden.
 
 4. **Systemstart & Kalibrierung**
@@ -110,7 +111,7 @@ Die WebApp basiert auf **HTML, CSS, JavaScript, PHP und MySQL**. Für die Instal
     * Danach kalibriert sich der MQ-135 für 60 Sekunden.
     * Währenddessen leuchtet der LED-Ring blau.
 
-5. **LED-Status** 
+5. **LED-Status**
     * Blau → Kalibrierung läuft
     * Grün → Alles normal
     * Gelb → Windel nass
@@ -119,21 +120,18 @@ Die WebApp basiert auf **HTML, CSS, JavaScript, PHP und MySQL**. Für die Instal
 6. **Datenübertragung**
     * api/load/diaper.php -> Ereignisse (nass, voll, trocken)
     * api/load/stock.php -> Windelbestand
-    
+
 7. **Hinweise**
     * Waage muss beim Start leer sein.
     * Referenz neu messen bei anderem Windeltyp.
     * Ereignisse werden erst nach stabiler Messung bestätigt.
     * Während der Kalibrierung können keine neuen Ereignisse erkannt werden.
 
+* **Komponentenplan:**
+<img src="readmeimg/komponentenplan.png" alt="Steckplan" width="600">
 
-* **Komponentenplan:** [Schaubild ergänzen]
-  * eingesetzte Komponenten
-  * verbundene Sensoren und Aktoren
-  * Programme mit Dateinamen
-  * Kommunikationswege
-* **Steckplan:** [Fritzing-, Tinkercad- oder Wokwi-Plan ergänzen]
-* **Bildmaterial:** [Bilder ergänzen]
+* **Steckplan:**
+<img src="readmeimg/steckplan_im4_Steckplatine.png" alt="Steckplan" width="600">
 * **Inbetriebnahme:** Das physische Artefakt muss die Messwerte für Windelstatus und Vorrat in die Datenbanktabellen `diaper_event` und `stock` übertragen.
 
 ## Technische Details
@@ -246,7 +244,6 @@ Die Authentifizierung erfolgt über Registrierung und Login. Nur eingeloggte Ben
 * Die Waage kann durch Positionierung, Bewegungen oder die Stromversorgung beeinflusst werden.
 * Sensor-Nummern müssen bereits in der Tabelle `sensors` vorhanden sein, da sonst Foreign-Key-Fehler beim Speichern entstehen können.
 
-
 ## Umsetzungsprozess
 
 ### Reflexion / Erfahrung / Lernfortschritt
@@ -270,7 +267,6 @@ Hilfreich war der schrittweise Aufbau des Systems. Die Sensoren wurden zuerst ei
 * **Datenbankabhängigkeiten:** Sensor-Nummern mussten zuerst in der Tabelle `sensors` vorhanden sein, bevor Daten in `diaper` oder `stock` gespeichert werden konnten.
 * **Schrittweises Testen:** Die Sensoren wurden zuerst einzeln und danach gemeinsam getestet, wodurch Fehler einfacher gefunden werden konnten.
 
-
 ### KI-Einsatz
 
 Mögliche Ergänzung:
@@ -283,7 +279,3 @@ Mögliche Ergänzung:
 ### Fazit
 
 Folle Vindl verbindet Physical Computing mit einer alltagsnahen WebApp. Die Anwendung zeigt, wie Sensordaten über eine Datenbank in eine verständliche Benutzeroberfläche übertragen werden können. Besonders wichtig waren dabei eine klare Datenstruktur, verständliche Schnittstellen und eine konsistente Logik zwischen Backend und Frontend.
-
-
-
-
