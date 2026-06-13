@@ -132,7 +132,9 @@ Die WebApp basiert auf **HTML, CSS, JavaScript, PHP und MySQL**. Für die Instal
 
 * **Steckplan:**
 <img src="readmeimg/steckplan_im4_Steckplatine.png" alt="Steckplan" width="600">
-* **Inbetriebnahme:** Das physische Artefakt muss die Messwerte für Windelstatus und Vorrat in die Datenbanktabellen `diaper_event` und `stock` übertragen.
+
+* **Inbetriebnahme:**
+Das physische Artefakt muss die Messwerte für Windelstatus und Vorrat in die Datenbanktabellen `diaper_event` und `stock` übertragen.
 
 ## Technische Details
 
